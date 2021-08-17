@@ -1,4 +1,5 @@
 import './App.css';
+import TimeCodes from './modules/TimeCodes'
 import { useState, useEffect, useCallback} from 'react'
 
 function App() {
@@ -45,8 +46,13 @@ function App() {
         setPercentage(json.progress.percentage);
         setCurrentTask(json.progress.description);
         if (json.complete === true) {
-          console.log('complete');
           setComplete(true);
+          setAlbumTimeCodes(json.result.timecodes);
+          setAlbumTitle(json.result.title);
+          setAlbumArtist(json.result.artist);
+          setAlbumYear(json.result.year);
+          setAlbumTitleId(json.result.titleid);
+          console.log('complete');
         }
       }, 500)
       setIntervalId(interval);
@@ -64,31 +70,18 @@ function App() {
     console.log(json);
   };
 
-  const getAlbumInfo = useCallback(async () => {
-    const res = await fetch('http://localhost:8000/api/album_data/' + id);
-    const json = await res.json();
-    console.log(json);
-    setAlbumTimeCodes(json.timecodes);
-    setAlbumTitle(json.title);
-    setAlbumArtist(json.artist);
-    setAlbumYear(json.year);
-    setAlbumTitleId(json.titleid);
-  }, [id])
-
   useEffect(() => {
     if (complete) {
       clearInterval(intervalId);
-      getAlbumInfo();
       setComplete(false);
     }
-  }, [complete, intervalId, getAlbumInfo]);
+  }, [complete, intervalId]);
 
   return (
     <>
     <div className="App">
       <input type="text" onChange={handleUrlChange} value={albumUrl}></input>
       <button onClick={handleSubmit}>Submit</button>
-      <button onClick={handleFinalize}>looks good to me</button>
       {currentTask && <h1>{currentTask}</h1>}
       {percentage && <h1>{percentage}</h1>}
       <h1>complete: {complete.toString()}</h1>
@@ -97,11 +90,11 @@ function App() {
       {albumTitle && <h1>title: {albumTitle}</h1>}
       {albumArtist && <h1>artist: {albumArtist}</h1>}
       {albumYear && <h1>year: {albumYear}</h1>}
-      {albumTimeCodes && <textarea style={{width: 700, height: 300}} onChange={changeTimeCodes} value={
-        albumTimeCodes.map(([time, songTitle], index) => (
-        `${time} ${songTitle}`)
-      ).join('\n')
-      }></textarea>}
+      {albumTimeCodes && <TimeCodes 
+        handleChange={changeTimeCodes} 
+        timeCodes={albumTimeCodes}
+      />}
+      <button onClick={handleFinalize}>looks good to me</button>
     </div>
     </>
   );

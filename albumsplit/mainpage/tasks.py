@@ -1,7 +1,7 @@
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 import requests, youtube_dl, re, subprocess, os, string, re
-import time, shutil
+import time, shutil, io
 import time
 from subprocess import PIPE
 from youtube_comment_downloader import downloader
@@ -9,6 +9,7 @@ from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 import shlex
 from albumsplit.settings import BASE_DIR, SCRIPTS_DIR, MEDIA_ROOT
+
 
 
 @shared_task(bind=True)
@@ -61,17 +62,28 @@ def download(self, info):
     info['url'], info['titleid'], info['timecodes'], \
     info['title'], info['artist'], info['year']
 
-    ydl_opts = {
-        'outtmpl': 'media/%(id)s.%(ext)s',
-        'extractaudio': True,
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-        }]
-    }
 
     if not exists_already(titleid):
-        print(f'downloading youtube video because one doesn\'t exist')
+        def get_percentage(d):
+            if d['status'] == 'finished':
+                progress_recorder.set_progress(2, num_tasks, description='100%')
+                return '100%'
+            if d['status'] == 'downloading':
+                percentage_progress = d['_percent_str'].trim()
+                progress_recorder.set_progress(2, num_tasks, description=f'Downloading ({percentage_progress}%)')
+
+        progress_recorder.set_progress(2, num_tasks, description='still goin')
+
+        ydl_opts = {
+            'outtmpl': 'media/%(id)s.%(ext)s',
+            'extractaudio': True,
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+            }],
+            'progress_hooks': [get_percentage]
+        }
+
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
         with open(f'media/{titleid}.txt', "w+") as FILE:
@@ -79,15 +91,25 @@ def download(self, info):
 
     tagurl = FileSystemStorage().url(f'{titleid}.txt')
     longmediaurl = FileSystemStorage().url(f'{titleid}.opus')
-    escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE).stdout.read().decode("utf-8").split('\n')[0]
-    progress_recorder.set_progress(2, num_tasks, description=f'splitting, tagging tracks')
-    process1 = subprocess.Popen([booksplit_path, f'.{longmediaurl}', f'.{tagurl}', f'{title}', f'{artist}', f'{year}'], stdout=PIPE, stderr=PIPE)
-    messages = [' '.join([booksplit_path, f'.{longmediaurl}', f'.{tagurl}', f'{title}', f'{artist}', f'{year}'])]
+    escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE) \
+        .stdout.read().decode("utf-8").split('\n')[0]
+    progress_recorder.set_progress(2, num_tasks, 
+        description=f'splitting audio & tagging tracks')
+    process1 = subprocess.Popen([
+        booksplit_path, 
+        f'.{longmediaurl}', 
+        f'.{tagurl}', 
+        f'{title}', 
+        f'{artist}', 
+        f'{year}'], stdout=PIPE, stderr=PIPE)
+    messages = []
     messages.append(process1.stdout.read().decode("utf-8").rstrip().split('\n'))
     messages.append(process1.stderr.read().decode("utf-8").rstrip())
     os.chdir(MEDIA_ROOT)
     progress_recorder.set_progress(3, num_tasks, description=f'compressing folder')
-    process2 = subprocess.Popen(['zip', '-r', f'{escapedtitle}.zip', f'{escapedtitle}'],stdout=PIPE, stderr=PIPE)
+    process2 = subprocess.Popen([
+        'zip', '-r', f'{escapedtitle}.zip', f'{escapedtitle}'
+        ], stdout=PIPE, stderr=PIPE)
     os.chdir(BASE_DIR)
     messages.append(process2.stdout.read().decode("utf-8").rstrip())
     messages.append(process2.stderr.read().decode("utf-8").rstrip())

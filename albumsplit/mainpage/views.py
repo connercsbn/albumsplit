@@ -30,8 +30,3 @@ def get_album(request):
     return JsonResponse({
         'id': task_id
     })
-    
-@csrf_exempt
-def album_data(request, task_id):
-    result = get_album_info.AsyncResult(task_id).get()
-    return JsonResponse(result, safe=False)
