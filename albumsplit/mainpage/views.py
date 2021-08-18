@@ -13,7 +13,6 @@ import json
 from mainpage.tasks import get_album_info, download
 
 @require_http_methods(["POST"])
-@csrf_exempt
 def yturl(request):
     url = json.loads(request.body.decode("utf-8"))['url']
     download_task = get_album_info.delay(url)
@@ -22,7 +21,7 @@ def yturl(request):
         'id': task_id
     })
 
-@csrf_exempt
+@require_http_methods(["POST"])
 def get_album(request):
     data = json.loads(request.body.decode("utf-8"))
     download_task = download.delay(data)

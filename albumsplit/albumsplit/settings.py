@@ -134,6 +134,9 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://localhost'
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CELERY_TIMEZONE = "America/Los_Angeles"

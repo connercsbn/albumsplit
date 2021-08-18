@@ -54,7 +54,7 @@ def get_album_info(self, url):
 def download(self, info):
     progress_recorder = ProgressRecorder(self)
     num_tasks = 4
-    progress_recorder.set_progress(1, num_tasks, description=f'downloading video')
+    progress_recorder.set_progress(1, num_tasks, description=f'Downloading (0%)')
     booksplit_path = os.path.join(SCRIPTS_DIR, 'booksplit')
     esctitle_path = os.path.join(SCRIPTS_DIR, 'esctitle')
     tag_path = os.path.join(SCRIPTS_DIR, 'tag')
@@ -66,11 +66,11 @@ def download(self, info):
     if not exists_already(titleid):
         def get_percentage(d):
             if d['status'] == 'finished':
-                progress_recorder.set_progress(2, num_tasks, description='100%')
+                progress_recorder.set_progress(2, num_tasks, description='Downloading (100%)')
                 return '100%'
             if d['status'] == 'downloading':
-                percentage_progress = d['_percent_str'].trim()
-                progress_recorder.set_progress(2, num_tasks, description=f'Downloading ({percentage_progress}%)')
+                percentage_progress = d['_percent_str']
+                progress_recorder.set_progress(2, num_tasks, description=f'Downloading ({percentage_progress})')
 
         progress_recorder.set_progress(2, num_tasks, description='still goin')
 
@@ -86,8 +86,8 @@ def download(self, info):
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
-        with open(f'media/{titleid}.txt', "w+") as FILE:
-            FILE.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
+        with open(f'media/{titleid}.txt', "w+") as f:
+            f.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
 
     tagurl = FileSystemStorage().url(f'{titleid}.txt')
     longmediaurl = FileSystemStorage().url(f'{titleid}.opus')

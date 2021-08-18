@@ -1,6 +1,7 @@
 import './App.css';
-import TimeCodes from './modules/TimeCodes'
-import { useState, useEffect, useCallback} from 'react'
+import getCookie from './utils/getCookie';
+import TimeCodes from './modules/TimeCodes';
+import { useState, useEffect } from 'react'
 
 function App() {
   const [id, setId] = useState();
@@ -14,6 +15,7 @@ function App() {
   const [albumTitle, setAlbumTitle] = useState('');
   const [albumArtist, setAlbumArtist] = useState('');
   const [albumYear, setAlbumYear] = useState('');
+  const [cookie, setCookie] = useState(getCookie('csrftoken'));
 
   const handleUrlChange = (event) => {
     setAlbumUrl(event.target.value)
@@ -24,6 +26,12 @@ function App() {
   const handleFinalize = async () => {
     const res = await fetch('http://localhost:8000/api/get_album/', {
       method: 'POST',
+      credentials: 'include',
+      headers: {
+        "X-CSRFToken": cookie,
+        "Accept": "applications/json",
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         title: albumTitle,
         url: albumUrl,
@@ -61,8 +69,15 @@ function App() {
 
 
   const handleSubmit = async () => {
+    console.log(`cookie is: ${cookie}`);
     const res = await fetch('http://localhost:8000/api/yturl', {
       method: 'POST',
+      credentials: 'include',
+      headers: {
+        "X-CSRFToken": cookie,
+        "Accept": "applications/json",
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ url: albumUrl })
     });
     const json = await res.json();
