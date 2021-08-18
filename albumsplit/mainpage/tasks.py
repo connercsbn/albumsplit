@@ -55,7 +55,7 @@ def download(self, info):
     progress_recorder = ProgressRecorder(self)
     num_tasks = 4
     progress_recorder.set_progress(1, num_tasks, description=f'downloading video')
-    booksplit_path = os.path.join(SCRIPTS_DIR, 'booksplit2')
+    booksplit_path = os.path.join(SCRIPTS_DIR, 'booksplit')
     esctitle_path = os.path.join(SCRIPTS_DIR, 'esctitle')
     tag_path = os.path.join(SCRIPTS_DIR, 'tag')
     url, titleid, timecodes, title, artist, year =\
