@@ -1,13 +1,42 @@
+/* Gruvbox bright */
+body {
+  --background: #1c1e21;
+  --black: #928374;
+  --red: #fb4934;
+  --green: #b8bb26;
+  --yellow: #fabd2f;
+  --blue: #83a598;
+  --magenta: #d3869b;
+  --cyan: #8ec07c;
+  --white: #ebdbb2;
+}
+/* Gruvbox colors */
+/* body {
+  --background: #1c1e21;
+  --red: #cc241d;
+  --green: #98971a;
+  --yellow: #d79921;
+  --blue: #458588;
+  --magenta: #b16286;
+  --cyan: #689d6a;
+  --white: #a89984;
+  --white: #f5f6f7;
+} */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  color: var(--white);
+  background-color: var(--background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+.red {color: var(--red);}
+.blue {color: var(--blue);}
+.green {color: var(--green);}
+.magenta {color: var(--magenta);}
+.cyan {color: var(--cyan);}
+.yellow {color: var(--yellow);}

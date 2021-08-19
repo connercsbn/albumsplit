@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-4gf8d#!8$(d5bch*z9d7%7_i8t)%@^rvw-4tut2pcm)#n__au0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -47,8 +47,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -152,3 +152,10 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 SCRIPTS_DIR = os.path.join(BASE_DIR, 'scripts')
+
+
+# make this true in production
+CSRF_COOKIE_SECURE = False
+CSRF_USE_SESSIONS = True
+
+CSRF_TRUSTED_ORIGINS = ['localhost:3000']
