@@ -3,29 +3,37 @@ import "@fontsource/roboto";
 import Cookies from "js-cookie";
 import TimeCodes from "./modules/TimeCodes";
 import Stepper from "./modules/Stepper";
-import { TextField, CssBaseline, Container, Button } from "@material-ui/core";
+import EditableAlbumAttribute from "./modules/EditableAlbumAttribute";
+import {
+  Fade,
+  LinearProgress,
+  TextField,
+  CssBaseline,
+  Container,
+  Typography,
+} from "@material-ui/core";
 import Header from "./modules/Header";
 import { useState, useEffect } from "react";
 import handleToken from "./utils/handleToken";
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [id, setId] = useState();
   const [intervalId, setIntervalId] = useState();
   const [currentTask, setCurrentTask] = useState("");
-  const [percentage, setPercentage] = useState("");
+  const [percent, setPercent] = useState("");
   const [complete, setComplete] = useState(false);
+  const [fetchedUrl, setFetchedUrl] = useState("");
   const [albumUrl, setAlbumUrl] = useState("");
   const [albumTitleId, setAlbumTitleId] = useState("");
   const [albumTimeCodes, setAlbumTimeCodes] = useState();
   const [albumTitle, setAlbumTitle] = useState("");
   const [albumArtist, setAlbumArtist] = useState("");
   const [albumYear, setAlbumYear] = useState("");
+  const [zipUrl, setZipUrl] = useState("");
 
   const handleUrlChange = (event) => {
     setAlbumUrl(event.target.value);
-  };
-  const changeTimeCodes = (event) => {
-    setAlbumTimeCodes(event.target.value);
   };
   const handleFinalize = async () => {
     const res = await fetch("http://localhost:8000/api/get_album/", {
@@ -54,20 +62,27 @@ function App() {
 
   useEffect(() => {
     if (id) {
+      setLoading(true);
       const interval = setInterval(async () => {
         const res = await fetch("http://localhost:8000/api/progress/" + id);
         const json = await res.json();
         console.log(json);
-        setPercentage(json.progress.percentage);
+        setPercent(json.progress.percent);
         setCurrentTask(json.progress.description);
         if (json.complete === true) {
-          setComplete(true);
-          setAlbumTimeCodes(json.result.timecodes);
-          setAlbumTitle(json.result.title);
-          setAlbumArtist(json.result.artist);
-          setAlbumYear(json.result.year);
-          setAlbumTitleId(json.result.titleid);
-          console.log("complete");
+          if (json.result.timecodes) {
+            setComplete(true);
+            setAlbumTimeCodes(json.result.timecodes);
+            setAlbumTitle(json.result.title);
+            setAlbumArtist(json.result.artist);
+            setAlbumYear(json.result.year);
+            setAlbumTitleId(json.result.titleid);
+            setLoading(false);
+            console.log("complete");
+          } else {
+            setZipUrl(json.result.zipurl);
+            setLoading(false);
+          }
         }
       }, 500);
       setIntervalId(interval);
@@ -75,6 +90,10 @@ function App() {
   }, [id]);
 
   const handleSubmit = async () => {
+    if (albumUrl === fetchedUrl) {
+      return;
+    }
+    setLoading(true);
     const res = await fetch("http://localhost:8000/api/yturl", {
       method: "POST",
       credentials: "include",
@@ -85,8 +104,10 @@ function App() {
       },
       body: JSON.stringify({ url: albumUrl }),
     });
+    setFetchedUrl(albumUrl);
     const json = await res.json();
     setId(json.id);
+    setLoading(false);
     console.log(json);
   };
 
@@ -109,23 +130,53 @@ function App() {
           fullWidth
         />
       </form>
-      {/* <Button varian="contained" color="primary" onClick={handleSubmit}>
-        Submit
-      </Button> */}
     </>
   );
   const approveInfoStep = (
     <>
-      {albumTitleId && <h1>id: {albumTitleId}</h1>}
-      {albumTitle && <h1>title: {albumTitle}</h1>}
-      {albumArtist && <h1>artist: {albumArtist}</h1>}
-      {albumYear && <h1>year: {albumYear}</h1>}
-      {albumTimeCodes && (
-        <TimeCodes handleChange={changeTimeCodes} timeCodes={albumTimeCodes} />
+      {albumTitle && (
+        <EditableAlbumAttribute
+          info={albumTitle}
+          setNewInfo={setAlbumTitle}
+          label="Album title"
+        />
       )}
+      {albumArtist && (
+        <EditableAlbumAttribute
+          info={albumArtist}
+          setNewInfo={setAlbumArtist}
+          label="Artist"
+        />
+      )}
+      {albumYear && (
+        <EditableAlbumAttribute
+          info={albumYear}
+          setNewInfo={setAlbumYear}
+          label="Year"
+        />
+      )}
+      {albumTimeCodes && <TimeCodes timeCodes={albumTimeCodes} />}
     </>
   );
-  const stepThree = <p>Last step!!!</p>;
+  const downloadStep =
+    currentTask && percent ? (
+      <>
+        {/* <Fade
+        in={loading}
+        style={{
+          transitionDelay: loading ? "80ms" : "0ms",
+        }}
+        unmountOnExit
+      > */}
+        <LinearProgress variant={"determinate"} value={percent} />
+        {/* </Fade> */}
+        <Typography>
+          {currentTask} <br /> {percent}
+        </Typography>
+      </>
+    ) : (
+      <Typography>{zipUrl}</Typography>
+    );
 
   return (
     <>
@@ -134,50 +185,28 @@ function App() {
         <div className="App">
           <Header />
           <Stepper
-            stepsContent={[submitUrlStep, approveInfoStep, stepThree]}
+            stepsContent={[submitUrlStep, approveInfoStep, downloadStep]}
             handleSubmit={handleSubmit}
+            handleFinalize={handleFinalize}
+            albumUrl={albumUrl}
+            loading={loading}
           />
-          {/* <form noValidate autoComplete="off">
-            <TextField
-              onChange={handleUrlChange}
-              id="standard-basic"
-              label="YouTube URL"
-              value={albumUrl}
-              size="large"
-              fullWidth
-            />
-          </form>
-          <Button varian="contained" color="primary" onClick={handleSubmit}>
-            Submit
-          </Button> */}
-          {/* {percentage && <h1>{percentage}</h1>}
-      <h1>complete: {complete.toString()}</h1>
-      <h1>id: {id}</h1>
-      {albumTitleId && <h1>id: {albumTitleId}</h1>}
-      {albumTitle && <h1>title: {albumTitle}</h1>}
-      {albumArtist && <h1>artist: {albumArtist}</h1>}
-      {albumYear && <h1>year: {albumYear}</h1>}
-      {albumTimeCodes && <TimeCodes 
-        handleChange={changeTimeCodes} 
-        timeCodes={albumTimeCodes}
-      />}
-      <button onClick={handleFinalize}>looks good to me</button> */}
         </div>
       </Container>
     </>
   );
 }
-const tc = [
-  ["00:00", "Plantasia"],
-  ["03:24", "Symphony For A Spider Plant"],
-  ["06:04", "Baby's Tears Blues"],
-  ["09:08", "Ode To An African Violet"],
-  ["13:14", "Concerto For Philodendron & Pothos"],
-  ["16:24", "Rhapsody In Green"],
-  ["19:52", "Swingin' Spathiphyllums"],
-  ["22:54", "You Don't Have To Walk A Begonia"],
-  ["25:29", "A Mellow Mood For Maidenhair"],
-  ["27:51", "Music To Soothe The Savage Snake Plant"],
-];
+// const tc = [
+//   ["00:00", "Plantasia"],
+//   ["03:24", "Symphony For A Spider Plant"],
+//   ["06:04", "Baby's Tears Blues"],
+//   ["09:08", "Ode To An African Violet"],
+//   ["13:14", "Concerto For Philodendron & Pothos"],
+//   ["16:24", "Rhapsody In Green"],
+//   ["19:52", "Swingin' Spathiphyllums"],
+//   ["22:54", "You Don't Have To Walk A Begonia"],
+//   ["25:29", "A Mellow Mood For Maidenhair"],
+//   ["27:51", "Music To Soothe The Savage Snake Plant"],
+// ];
 
 export default App;

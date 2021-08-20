@@ -1,37 +1,45 @@
 import { useState, useEffect } from "react";
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button, Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 
-const TimeCodes = ({ handleChange, timeCodes }) => {
-  const [approve, setApprove] = useState(true);
+const TimeCodes = ({ timeCodes }) => {
+  const [approve, setApprove] = useState(false);
   const [timeCodesString, setTimeCodesString] = useState("");
 
-  let dimensions = { width: 700, height: 300 };
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      padding: "1em",
+      display: "block",
+      lineHeight: .75
+    }
+  }));
+
+  const classes = useStyles();
 
   useEffect(() => {
-    if (approve) {
       setTimeCodesString(
         timeCodes
           .map(([time, songTitle], index) => `${time} ${songTitle}`)
           .join("\n")
       );
-    }
   }, [timeCodes, approve]);
 
   if (approve) {
     return (
       <>
-        <div style={dimensions}>
-          {timeCodes.map(([time, songTitle], index) => (
-            <p>{`${time} ${songTitle}`}</p>
-          ))}
-        </div>
+        <Paper className={classes.root} elevation={3} >
         <Button
           onClick={() => setApprove(false)}
-          variant="contained"
-          color="primary"
+          color="secondary"
         >
-          button
+          Edit
         </Button>
+          {timeCodes.map(([time, songTitle], index) => (
+            <>
+            <p>{`${time} ${songTitle}`}</p>
+            </>
+          ))}
+        </Paper>
       </>
     );
   } else {
@@ -39,11 +47,12 @@ const TimeCodes = ({ handleChange, timeCodes }) => {
       <>
         <TextField
           value={timeCodesString}
-          onChange={handleChange}
+          onChange={(e) => setTimeCodesString(e.target.value)}
+          square={false}
+          spellCheck={false}
           id="outlined-multiline-static"
-          label="Multiline"
+          fullWidth={true}
           multiline
-          rows={4}
           defaultValue="Default Value"
           variant="outlined"
         />

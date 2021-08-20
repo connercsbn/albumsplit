@@ -134,6 +134,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://localhost'
 ]
+CSRF_TRUSTED_ORIGINS = ['localhost:3000']
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -157,5 +158,3 @@ SCRIPTS_DIR = os.path.join(BASE_DIR, 'scripts')
 # make this true in production
 CSRF_COOKIE_SECURE = False
 CSRF_USE_SESSIONS = True
-
-CSRF_TRUSTED_ORIGINS = ['localhost:3000']
