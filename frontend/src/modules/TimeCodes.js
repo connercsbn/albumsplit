@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { TextField, Button, Paper } from "@material-ui/core";
+import { TextField, Paper, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-const TimeCodes = ({ timeCodes }) => {
+const TimeCodes = ({ timeCodes, original }) => {
   const [approve, setApprove] = useState(false);
   const [timeCodesString, setTimeCodesString] = useState("");
+  console.log({original});
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -15,14 +16,24 @@ const TimeCodes = ({ timeCodes }) => {
   }));
 
   const classes = useStyles();
+  const timeCodesToString = (tc) => {
+        if (tc) {
+          return tc.map(([time, songTitle], index) => `${time} ${songTitle}`).join("\n");
+        } else {
+          return ''
+        }
+  }
+  const handleReset = () => {
+    setTimeCodesString(timeCodesToString(original))
+  }
 
   useEffect(() => {
-      setTimeCodesString(
-        timeCodes
-          .map(([time, songTitle], index) => `${time} ${songTitle}`)
-          .join("\n")
-      );
-  }, [timeCodes, approve]);
+    console.log({original});
+    if (timeCodes) {
+      setTimeCodesString(timeCodesToString(timeCodes))
+    };
+  }, [timeCodes]);
+
 
   if (approve) {
     return (
@@ -34,7 +45,7 @@ const TimeCodes = ({ timeCodes }) => {
         >
           Edit
         </Button>
-          {timeCodes.map(([time, songTitle], index) => (
+          {timeCodes && timeCodes.map(([time, songTitle], index) => (
             <>
             <p>{`${time} ${songTitle}`}</p>
             </>
@@ -56,6 +67,7 @@ const TimeCodes = ({ timeCodes }) => {
           defaultValue="Default Value"
           variant="outlined"
         />
+        <Button onClick={handleReset}>Reset</Button>
       </>
     );
   }

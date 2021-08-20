@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Stepper,
   Step,
   StepLabel,
   Typography,
+  TextField,
 } from "@material-ui/core";
 import { css } from "@emotion/react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,48 +25,67 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return [
-    "Select YouTube album or audiobook",
-    "Confirm tracklist",
-    "Download album",
-  ];
+  return ["Select YouTube album or audiobook", "Confirm tracklist"];
 }
 
 export default function HorizontalLinearStepper({
-  stepsContent,
+  initialStepsContent,
   handleSubmit,
   handleFinalize,
   albumUrl,
   loading,
+  setLoading,
+  handleUrlChange,
 }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set());
+  const [stepsContent, setStepsContent] = useState(0);
   const steps = getSteps();
 
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
+  const handleNext = useCallback(
+    (step) => {
+      console.log(step);
+      if (step === 0) {
+        handleSubmit();
+      } else if (step === 1) {
+        handleFinalize();
+      }
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    },
+    [handleFinalize, handleSubmit]
+  );
 
-  const isStepSkipped = (step) => {
-    return skipped.has(step);
-  };
-
-  const handleNext = (step) => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-    console.log(step);
-    if (step === 0) {
-      handleSubmit();
-    } else if (step === 1) {
-      handleFinalize();
-    }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-  };
+  const submitUrlStep = useMemo(
+    () => (
+      <>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleNext(activeStep);
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            onChange={handleUrlChange}
+            id="standard-basic"
+            label="YouTube URL"
+            value={albumUrl}
+            size="large"
+            fullWidth
+          />
+        </form>
+      </>
+    ),
+    [handleUrlChange, albumUrl, handleNext, activeStep]
+  );
+  useEffect(() => {
+    setStepsContent([
+      submitUrlStep,
+      initialStepsContent[0],
+      initialStepsContent[1],
+    ]);
+  }, [initialStepsContent, submitUrlStep]);
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -73,6 +93,7 @@ export default function HorizontalLinearStepper({
 
   const handleReset = () => {
     setActiveStep(0);
+    setLoading(false);
   };
 
   return (
@@ -81,9 +102,6 @@ export default function HorizontalLinearStepper({
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
           return (
             <Step key={label} {...stepProps}>
               <StepLabel {...labelProps}>{label}</StepLabel>
@@ -95,9 +113,14 @@ export default function HorizontalLinearStepper({
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>
-              All steps completed - you&apos;re finished
+              {stepsContent[activeStep]}
             </Typography>
-            <Button onClick={handleReset} className={classes.button}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleReset}
+              className={classes.button}
+            >
               Reset
             </Button>
           </div>

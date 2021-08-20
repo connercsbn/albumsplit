@@ -7,7 +7,6 @@ import EditableAlbumAttribute from "./modules/EditableAlbumAttribute";
 import {
   Fade,
   LinearProgress,
-  TextField,
   CssBaseline,
   Container,
   Typography,
@@ -24,6 +23,7 @@ function App() {
   const [percent, setPercent] = useState("");
   const [complete, setComplete] = useState(false);
   const [fetchedUrl, setFetchedUrl] = useState("");
+  const [originalAlbumInfo, setOriginalAlbumInfo] = useState([]);
   const [albumUrl, setAlbumUrl] = useState("");
   const [albumTitleId, setAlbumTitleId] = useState("");
   const [albumTimeCodes, setAlbumTimeCodes] = useState();
@@ -77,6 +77,12 @@ function App() {
             setAlbumArtist(json.result.artist);
             setAlbumYear(json.result.year);
             setAlbumTitleId(json.result.titleid);
+            setOriginalAlbumInfo({
+              timecodes: json.result.timecodes,
+              title: json.result.title,
+              artist: json.result.artist,
+              year: json.result.year,
+            });
             setLoading(false);
             console.log("complete");
           } else {
@@ -118,58 +124,36 @@ function App() {
     }
   }, [complete, intervalId]);
 
-  const submitUrlStep = (
-    <>
-      <form noValidate autoComplete="off">
-        <TextField
-          onChange={handleUrlChange}
-          id="standard-basic"
-          label="YouTube URL"
-          value={albumUrl}
-          size="large"
-          fullWidth
-        />
-      </form>
-    </>
-  );
   const approveInfoStep = (
     <>
-      {albumTitle && (
-        <EditableAlbumAttribute
-          info={albumTitle}
-          setNewInfo={setAlbumTitle}
-          label="Album title"
-        />
-      )}
-      {albumArtist && (
-        <EditableAlbumAttribute
-          info={albumArtist}
-          setNewInfo={setAlbumArtist}
-          label="Artist"
-        />
-      )}
-      {albumYear && (
-        <EditableAlbumAttribute
-          info={albumYear}
-          setNewInfo={setAlbumYear}
-          label="Year"
-        />
-      )}
-      {albumTimeCodes && <TimeCodes timeCodes={albumTimeCodes} />}
+      <EditableAlbumAttribute
+        info={albumTitle}
+        setNewInfo={setAlbumTitle}
+        original={originalAlbumInfo.title}
+        label="Album title"
+      />
+      <EditableAlbumAttribute
+        info={albumArtist}
+        setNewInfo={setAlbumArtist}
+        original={originalAlbumInfo.artist}
+        label="Artist"
+      />
+      <EditableAlbumAttribute
+        info={albumYear}
+        setNewInfo={setAlbumYear}
+        original={originalAlbumInfo.year}
+        label="Year"
+      />
+      <TimeCodes
+        original={originalAlbumInfo.timecodes}
+        timeCodes={albumTimeCodes}
+      />
     </>
   );
   const downloadStep =
     currentTask && percent ? (
       <>
-        {/* <Fade
-        in={loading}
-        style={{
-          transitionDelay: loading ? "80ms" : "0ms",
-        }}
-        unmountOnExit
-      > */}
         <LinearProgress variant={"determinate"} value={percent} />
-        {/* </Fade> */}
         <Typography>
           {currentTask} <br /> {percent}
         </Typography>
@@ -185,11 +169,13 @@ function App() {
         <div className="App">
           <Header />
           <Stepper
-            stepsContent={[submitUrlStep, approveInfoStep, downloadStep]}
+            initialStepsContent={[approveInfoStep, downloadStep]}
             handleSubmit={handleSubmit}
             handleFinalize={handleFinalize}
             albumUrl={albumUrl}
             loading={loading}
+            setLoading={setLoading}
+            handleUrlChange={handleUrlChange}
           />
         </div>
       </Container>
