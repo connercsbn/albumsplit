@@ -1,4 +1,6 @@
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button, Tooltip } from "@material-ui/core";
+import { css } from "@emotion/react";
+import ReplayIcon from "@material-ui/icons/ReplayOutlined";
 
 const EditableAlbumAttribute = ({ info, setNewInfo, original, label }) => {
   const handleReset = () => {
@@ -6,13 +8,38 @@ const EditableAlbumAttribute = ({ info, setNewInfo, original, label }) => {
   };
   return (
     <>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          marginTop: 20,
+          marginBottom: 20,
+        }}
+      >
         <TextField
           value={info}
           label={label}
           onChange={(e) => setNewInfo(e.target.value)}
         />
-        <Button onClick={handleReset}>Reset</Button>
+        <Tooltip title="Reset" placement="right">
+          <Button
+            onClick={handleReset}
+            style={{
+              height: "min-content",
+              width: "min-content",
+              alignSelf: "center",
+              color: "var(--blue)",
+              minWidth: 0,
+            }}
+          >
+            <ReplayIcon
+              fontSize="small"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          </Button>
+        </Tooltip>
       </div>
     </>
   );

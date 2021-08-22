@@ -5,51 +5,51 @@ import { makeStyles } from "@material-ui/styles";
 const TimeCodes = ({ timeCodes, original }) => {
   const [approve, setApprove] = useState(false);
   const [timeCodesString, setTimeCodesString] = useState("");
-  console.log({original});
+  console.log({ original });
 
   const useStyles = makeStyles((theme) => ({
     root: {
       padding: "1em",
       display: "block",
-      lineHeight: .75
-    }
+      lineHeight: 0.75,
+    },
   }));
 
   const classes = useStyles();
   const timeCodesToString = (tc) => {
-        if (tc) {
-          return tc.map(([time, songTitle], index) => `${time} ${songTitle}`).join("\n");
-        } else {
-          return ''
-        }
-  }
+    if (tc) {
+      return tc
+        .map(([time, songTitle], index) => `${time} ${songTitle}`)
+        .join("\n");
+    } else {
+      return "";
+    }
+  };
   const handleReset = () => {
-    setTimeCodesString(timeCodesToString(original))
-  }
+    setTimeCodesString(timeCodesToString(original));
+  };
 
   useEffect(() => {
-    console.log({original});
     if (timeCodes) {
-      setTimeCodesString(timeCodesToString(timeCodes))
-    };
+      setTimeCodesString(timeCodesToString(timeCodes));
+    }
   }, [timeCodes]);
-
 
   if (approve) {
     return (
       <>
-        <Paper className={classes.root} elevation={3} >
-        <Button
-          onClick={() => setApprove(false)}
-          color="secondary"
-        >
-          Edit
-        </Button>
-          {timeCodes && timeCodes.map(([time, songTitle], index) => (
-            <>
-            <p>{`${time} ${songTitle}`}</p>
-            </>
-          ))}
+        <Paper className={classes.root} elevation={3}>
+          <Button onClick={() => setApprove(false)} color="secondary">
+            Edit
+          </Button>
+          {timeCodes &&
+            timeCodes.map(([time, songTitle], index) => (
+              <>
+                <p>
+                  {time} {songTitle}
+                </p>
+              </>
+            ))}
         </Paper>
       </>
     );

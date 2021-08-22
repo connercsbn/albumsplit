@@ -5,15 +5,26 @@ import TimeCodes from "./modules/TimeCodes";
 import Stepper from "./modules/Stepper";
 import EditableAlbumAttribute from "./modules/EditableAlbumAttribute";
 import {
+  Select,
+  Tooltip,
+  Link,
+  makeStyles,
+  MenuItem,
+  FormControl,
+  Button,
   Fade,
+  InputLabel,
   LinearProgress,
   CssBaseline,
   Container,
   Typography,
+  ThemeProvider,
 } from "@material-ui/core";
-import Header from "./modules/Header";
+import gruvBox from "./style/gruvBox";
+// import Header from "./modules/Header";
 import { useState, useEffect } from "react";
 import handleToken from "./utils/handleToken";
+import { mergeClasses } from "@material-ui/styles";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -31,6 +42,22 @@ function App() {
   const [albumArtist, setAlbumArtist] = useState("");
   const [albumYear, setAlbumYear] = useState("");
   const [zipUrl, setZipUrl] = useState("");
+  const [audioType, setAudioType] = useState("opus");
+
+  const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(0),
+      minWidth: 220,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+  }));
+  const classes = useStyles();
+
+  const handleAudioTypeChange = (e) => {
+    setAudioType(e.target.value);
+  };
 
   const handleUrlChange = (event) => {
     setAlbumUrl(event.target.value);
@@ -72,7 +99,7 @@ function App() {
         if (json.complete === true) {
           if (json.result.timecodes) {
             setComplete(true);
-            setAlbumTimeCodes(json.result.timecodes);
+            setAlbumTimeCodes(json.result.timecodes[0]);
             setAlbumTitle(json.result.title);
             setAlbumArtist(json.result.artist);
             setAlbumYear(json.result.year);
@@ -144,41 +171,97 @@ function App() {
         original={originalAlbumInfo.year}
         label="Year"
       />
+      <div
+        style={{
+          display: "flex",
+          marginTop: 20,
+          marginBottom: 20,
+        }}
+      >
+        <FormControl className={classes.formControl}>
+          <InputLabel id="demo-simple-select-autowidth-label">
+            Audio file type
+          </InputLabel>
+          <Select
+            labelId="select-audio-type"
+            id="select-audio-type"
+            value={audioType}
+            onChange={handleAudioTypeChange}
+          >
+            <MenuItem value={"opus"}>
+              Opus{" "}
+              <span
+                style={{
+                  fontSize: ".8em",
+                  float: "right",
+                  fontStyle: "italic",
+                  marginLeft: "8px",
+                }}
+              >
+                higher quality
+              </span>
+            </MenuItem>
+            <MenuItem value={"mp3"}>
+              MP3{" "}
+              <span
+                style={{
+                  fontSize: ".8em",
+                  float: "right",
+                  fontStyle: "italic",
+                  marginLeft: "8px",
+                }}
+              >
+                lower quality
+              </span>{" "}
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </div>
       <TimeCodes
         original={originalAlbumInfo.timecodes}
         timeCodes={albumTimeCodes}
       />
     </>
   );
-  const downloadStep =
-    currentTask && percent ? (
-      <>
-        <LinearProgress variant={"determinate"} value={percent} />
-        <Typography>
-          {currentTask} <br /> {percent}
-        </Typography>
-      </>
-    ) : (
-      <Typography>{zipUrl}</Typography>
-    );
+  const downloadStep = currentTask && (
+    <>
+      <LinearProgress variant={"determinate"} value={percent} />
+      <Typography>
+        {currentTask} <br /> {percent}
+      </Typography>
+    </>
+  );
 
   return (
     <>
-      <CssBaseline />
-      <Container maxWidth="md">
-        <div className="App">
-          <Header />
-          <Stepper
-            initialStepsContent={[approveInfoStep, downloadStep]}
-            handleSubmit={handleSubmit}
-            handleFinalize={handleFinalize}
-            albumUrl={albumUrl}
-            loading={loading}
-            setLoading={setLoading}
-            handleUrlChange={handleUrlChange}
-          />
-        </div>
-      </Container>
+      <ThemeProvider theme={gruvBox}>
+        <CssBaseline />
+        <Container maxWidth="md">
+          <Typography
+            variant="h3"
+            style={{
+              textAlign: "center",
+              color: "var(--cyan)",
+              padding: "1em",
+            }}
+          >
+            Albumsplit
+          </Typography>
+          <div className="App">
+            {/* <Header /> */}
+            <Stepper
+              initialStepsContent={[approveInfoStep, downloadStep]}
+              handleSubmit={handleSubmit}
+              handleFinalize={handleFinalize}
+              albumUrl={albumUrl}
+              loading={loading}
+              setLoading={setLoading}
+              handleUrlChange={handleUrlChange}
+              zipUrl={zipUrl}
+            />
+          </div>
+        </Container>
+      </ThemeProvider>
     </>
   );
 }

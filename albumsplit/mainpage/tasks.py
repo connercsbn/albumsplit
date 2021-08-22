@@ -35,18 +35,21 @@ def get_album_info(self, url):
     artist = message["uploader"]
     description = message['description']
     playlist = get_timecodes(description.splitlines()[1:])
-    print(playlist)
+    comment_playlists = []
     if not playlist:
         progress_recorder.set_progress(2, num_tasks, description=f'looking in comments for timecodes')
-        message = downloader.main(['--youtubeid', titleid, '--output', 'thing'])
-        playlist = get_timecodes(message.splitlines())
-        print(playlist)
+        message = downloader.main(['--youtubeid', titleid, '--output', 'thing', '--sort', '0', '--limit', '50'])
+        for comment in message:
+            comment_playlists.append(get_timecodes(comment))
+        timecodes = comment_playlists
+    else:
+        timecodes = [playlist]
     progress_recorder.set_progress(3, num_tasks, description=f'done')
     return {
         'title': title,
         'artist': artist,
         'year': year,
-        'timecodes': playlist,
+        'timecodes': timecodes,
         'titleid': titleid
     }
 
