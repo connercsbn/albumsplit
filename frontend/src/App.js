@@ -1,7 +1,7 @@
 import "./App.css";
 import "@fontsource/roboto";
 import Cookies from "js-cookie";
-import TimeCodes from "./modules/TimeCodes";
+import TimeCodesDisplayer from "./modules/TimeCodesDisplayer";
 import Stepper from "./modules/Stepper";
 import EditableAlbumAttribute from "./modules/EditableAlbumAttribute";
 import {
@@ -37,12 +37,13 @@ function App() {
   const [originalAlbumInfo, setOriginalAlbumInfo] = useState([]);
   const [albumUrl, setAlbumUrl] = useState("");
   const [albumTitleId, setAlbumTitleId] = useState("");
-  const [albumTimeCodes, setAlbumTimeCodes] = useState();
+  const [albumTimeCodes, setAlbumTimeCodes] = useState([tc1, tc2]);
   const [albumTitle, setAlbumTitle] = useState("");
   const [albumArtist, setAlbumArtist] = useState("");
   const [albumYear, setAlbumYear] = useState("");
   const [zipUrl, setZipUrl] = useState("");
   const [audioType, setAudioType] = useState("opus");
+  const [timeCodesIndex, setTimeCodesIndex] = useState(0);
 
   const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -99,7 +100,7 @@ function App() {
         if (json.complete === true) {
           if (json.result.timecodes) {
             setComplete(true);
-            setAlbumTimeCodes(json.result.timecodes[0]);
+            setAlbumTimeCodes(json.result.timecodes);
             setAlbumTitle(json.result.title);
             setAlbumArtist(json.result.artist);
             setAlbumYear(json.result.year);
@@ -217,9 +218,11 @@ function App() {
           </Select>
         </FormControl>
       </div>
-      <TimeCodes
-        original={originalAlbumInfo.timecodes}
+      <TimeCodesDisplayer
+        original={albumTimeCodes}
         timeCodes={albumTimeCodes}
+        index={timeCodesIndex}
+        setIndex={setTimeCodesIndex}
       />
     </>
   );
@@ -265,17 +268,32 @@ function App() {
     </>
   );
 }
-// const tc = [
-//   ["00:00", "Plantasia"],
-//   ["03:24", "Symphony For A Spider Plant"],
-//   ["06:04", "Baby's Tears Blues"],
-//   ["09:08", "Ode To An African Violet"],
-//   ["13:14", "Concerto For Philodendron & Pothos"],
-//   ["16:24", "Rhapsody In Green"],
-//   ["19:52", "Swingin' Spathiphyllums"],
-//   ["22:54", "You Don't Have To Walk A Begonia"],
-//   ["25:29", "A Mellow Mood For Maidenhair"],
-//   ["27:51", "Music To Soothe The Savage Snake Plant"],
-// ];
+const tc1 = [
+  ["00:00", "Plantasia"],
+  ["03:24", "Symphony For A Spider Plant"],
+  ["06:04", "Baby's Tears Blues"],
+  ["09:08", "Ode To An African Violet"],
+  ["13:14", "Concerto For Philodendron & Pothos"],
+  ["16:24", "Rhapsody In Green"],
+  ["19:52", "Swingin' Spathiphyllums"],
+  ["22:54", "You Don't Have To Walk A Begonia"],
+  ["25:29", "A Mellow Mood For Maidenhair"],
+  ["27:51", "Music To Soothe The Savage Snake Plant"],
+];
+const tc2 = [
+  ["03:24", "Symphony For A Spider Plant"],
+  ["06:04", "Baby's Tears Blues"],
+  ["00:00", "Plantasia"],
+  ["09:08", "Ode To An African Violet"],
+  ["16:24", "Rhapsody In Green"],
+  ["19:52", "Swingin' Spathiphyllums"],
+  ["22:54", "You Don't Have To Walk A Begonia"],
+  ["25:29", "A Mellow Mood For Maidenhair"],
+  ["13:14", "Concerto For Philodendron & Pothos"],
+  ["13:14", "Concerto For Philodendron & Pothos"],
+  ["13:14", "Concerto For Philodendron & Pothos"],
+  ["13:14", "Concerto For Philodendron & Pothos"],
+  ["27:51", "Music To Soothe The Savage Snake Plant"],
+];
 
 export default App;
