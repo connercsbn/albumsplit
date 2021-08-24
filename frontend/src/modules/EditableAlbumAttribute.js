@@ -20,26 +20,28 @@ const EditableAlbumAttribute = ({ info, setNewInfo, original, label }) => {
           label={label}
           onChange={(e) => setNewInfo(e.target.value)}
         />
-        <Tooltip title="Reset" placement="right">
-          <Button
-            onClick={handleReset}
-            style={{
-              height: "min-content",
-              width: "min-content",
-              alignSelf: "center",
-              color: "var(--blue)",
-              minWidth: 0,
-            }}
-          >
-            <ReplayIcon
-              fontSize="small"
+        {info !== original && (
+          <Tooltip title="Reset" placement="right">
+            <Button
+              onClick={handleReset}
               style={{
-                width: 20,
-                height: 20,
+                height: "min-content",
+                width: "min-content",
+                alignSelf: "center",
+                color: "var(--blue)",
+                minWidth: 0,
               }}
-            />
-          </Button>
-        </Tooltip>
+            >
+              <ReplayIcon
+                fontSize="small"
+                style={{
+                  width: 20,
+                  height: 20,
+                }}
+              />
+            </Button>
+          </Tooltip>
+        )}
       </div>
     </>
   );

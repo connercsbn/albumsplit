@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { TextField, Paper, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { useSpring, animated } from "react-spring";
 
-const TimeCodes = ({ timeCodes, original }) => {
+const TimeCodes = ({ timeCodes, original, showingIndex, curr }) => {
   const [approve, setApprove] = useState(false);
   const [timeCodesString, setTimeCodesString] = useState("");
-  console.log({ original });
 
+  const [animStyle, api] = useSpring(() => ({
+    from: { opacity: 0, transform: "translateX(100%)" },
+    to: { opacity: 1, transform: "translateX(0%)" },
+  }));
   const useStyles = makeStyles((theme) => ({
     root: {
       padding: "1em",
@@ -14,6 +18,24 @@ const TimeCodes = ({ timeCodes, original }) => {
       lineHeight: 0.75,
     },
   }));
+  useEffect(() => {
+    if (showingIndex === curr) {
+      api({
+        opacity: 1,
+        transform: "translateX(0%)",
+      });
+    } else if (showingIndex > curr) {
+      api({
+        opacity: 0,
+        transform: "translateX(-100%)",
+      });
+    } else if (showingIndex < curr) {
+      api({
+        opacity: 0,
+        transform: "translateX(100%)",
+      });
+    }
+  }, [api, showingIndex, curr]);
 
   const classes = useStyles();
   const timeCodesToString = (tc) => {
@@ -25,6 +47,7 @@ const TimeCodes = ({ timeCodes, original }) => {
       return "";
     }
   };
+
   const handleReset = () => {
     setTimeCodesString(timeCodesToString(original));
   };
@@ -56,18 +79,26 @@ const TimeCodes = ({ timeCodes, original }) => {
   } else {
     return (
       <>
-        <TextField
-          value={timeCodesString}
-          onChange={(e) => setTimeCodesString(e.target.value)}
-          square={false}
-          spellCheck={false}
-          id="outlined-multiline-static"
-          fullWidth={true}
-          multiline
-          defaultValue="Default Value"
-          variant="outlined"
-        />
-        <Button onClick={handleReset}>Reset</Button>
+        <animated.div
+          style={{ ...animStyle, position: "absolute", width: "100%" }}
+        >
+          <TextField
+            maxRows={13}
+            minRows={13}
+            value={timeCodesString}
+            onChange={(e) => setTimeCodesString(e.target.value)}
+            square={false}
+            spellCheck={false}
+            id="outlined-multiline-static"
+            fullWidth={true}
+            multiline
+            defaultValue="Default Value"
+            variant="outlined"
+          />
+          {timeCodesToString(original) !== timeCodesString && (
+            <Button onClick={handleReset}>Reset</Button>
+          )}
+        </animated.div>
       </>
     );
   }

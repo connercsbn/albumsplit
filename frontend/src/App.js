@@ -37,7 +37,7 @@ function App() {
   const [originalAlbumInfo, setOriginalAlbumInfo] = useState([]);
   const [albumUrl, setAlbumUrl] = useState("");
   const [albumTitleId, setAlbumTitleId] = useState("");
-  const [albumTimeCodes, setAlbumTimeCodes] = useState([tc1, tc2]);
+  const [albumTimeCodes, setAlbumTimeCodes] = useState([]);
   const [albumTitle, setAlbumTitle] = useState("");
   const [albumArtist, setAlbumArtist] = useState("");
   const [albumYear, setAlbumYear] = useState("");
@@ -269,31 +269,70 @@ function App() {
   );
 }
 const tc1 = [
-  ["00:00", "Plantasia"],
-  ["03:24", "Symphony For A Spider Plant"],
-  ["06:04", "Baby's Tears Blues"],
-  ["09:08", "Ode To An African Violet"],
-  ["13:14", "Concerto For Philodendron & Pothos"],
-  ["16:24", "Rhapsody In Green"],
-  ["19:52", "Swingin' Spathiphyllums"],
-  ["22:54", "You Don't Have To Walk A Begonia"],
-  ["25:29", "A Mellow Mood For Maidenhair"],
-  ["27:51", "Music To Soothe The Savage Snake Plant"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
+  ["12:04", "Time code 1"],
 ];
 const tc2 = [
-  ["03:24", "Symphony For A Spider Plant"],
-  ["06:04", "Baby's Tears Blues"],
-  ["00:00", "Plantasia"],
-  ["09:08", "Ode To An African Violet"],
-  ["16:24", "Rhapsody In Green"],
-  ["19:52", "Swingin' Spathiphyllums"],
-  ["22:54", "You Don't Have To Walk A Begonia"],
-  ["25:29", "A Mellow Mood For Maidenhair"],
-  ["13:14", "Concerto For Philodendron & Pothos"],
-  ["13:14", "Concerto For Philodendron & Pothos"],
-  ["13:14", "Concerto For Philodendron & Pothos"],
-  ["13:14", "Concerto For Philodendron & Pothos"],
-  ["27:51", "Music To Soothe The Savage Snake Plant"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+  ["03:24", "Time code 2"],
+];
+const tc3 = [
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+  ["38:59", "Time code 3"],
+];
+const tc4 = [
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+  ["38:59", "Time code 4"],
+];
+const tc5 = [
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
+  ["38:59", "Time code 5"],
 ];
 
 export default App;
