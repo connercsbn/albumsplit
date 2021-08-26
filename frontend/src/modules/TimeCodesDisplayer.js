@@ -1,19 +1,24 @@
-import {
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-  useLayoutEffect,
-} from "react";
-import { TextField, Paper, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import { useSpring, animated } from "react-spring";
+import { Button } from "@material-ui/core";
 import TimeCodes from "./TimeCodes";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import Box from "@material-ui/core/Box";
+import { styled } from "@material-ui/core/styles";
 
-const TimeCodesDisplayer = ({ timeCodes, original, index, setIndex }) => {
+const ArrowButton = styled(Button)({
+  padding: "5px",
+  minWidth: 0,
+});
+
+const TimeCodesDisplayer = ({
+  timeCodes,
+  original,
+  index,
+  setIndex,
+  timeCodesIndex,
+  timeCodesString,
+  setTimeCodesString,
+}) => {
   const getZ = (curr) => {
     if (curr === index) {
       return { zIndex: 100 };
@@ -31,48 +36,68 @@ const TimeCodesDisplayer = ({ timeCodes, original, index, setIndex }) => {
         }}
       >
         {index > 0 && (
-          <Button
+          <ArrowButton
             onClick={() => {
               setIndex(index - 1);
             }}
             style={{
               position: "absolute",
-              left: "-60px",
-              top: "119px",
+              left: "-57px",
+              top: "118px",
               zIndex: 200,
             }}
           >
-            <ArrowBackIosIcon />
-          </Button>
+            <ArrowBackIosIcon
+              style={{ transform: "translateX(4px)", padding: 0 }}
+            />
+          </ArrowButton>
         )}
-        {timeCodes &&
+        {timeCodes.length ? (
           timeCodes.map((tc, curr) => (
-            <animated.div
-              style={{ ...getZ(curr), position: "absolute", width: "100%" }}
+            <div
+              id="timecodes"
+              style={{ ...getZ(curr), position: "relative", width: "100%" }}
             >
               <TimeCodes
                 style={{ position: "absolute" }}
                 showingIndex={index}
                 curr={curr}
+                timeCodesList={timeCodes}
                 timeCodes={tc}
-                original={tc}
+                original={original}
+                timeCodesString={timeCodesString}
+                setTimeCodesString={setTimeCodesString}
               />
-            </animated.div>
-          ))}
+            </div>
+          ))
+        ) : (
+          <div id="timecodes" style={{ width: "100%" }}>
+            <TimeCodes
+              style={{ position: "absolute" }}
+              showingIndex={0}
+              curr={0}
+              timeCodes={timeCodes[0]}
+              timeCodesList={timeCodes}
+              original={original}
+              timeCodesString={timeCodesString}
+              setTimeCodesString={setTimeCodesString}
+            />
+          </div>
+        )}
         {index < timeCodes.length - 1 && (
-          <Button
+          <ArrowButton
             onClick={() => {
               setIndex(index + 1);
             }}
             style={{
               position: "absolute",
-              right: "-60px",
-              top: "119px",
+              right: "-57px",
+              top: "118px",
               zIndex: 200,
             }}
           >
-            <ArrowForwardIosIcon />
-          </Button>
+            <ArrowForwardIosIcon style={{ padding: 0 }} />
+          </ArrowButton>
         )}
       </Box>
     </>

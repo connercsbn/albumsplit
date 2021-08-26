@@ -9,6 +9,12 @@ booktitle="$3"
 author="$4"
 year="$5"
 
+echo \
+"inputaudio: $inputaudio
+booktitle: $booktitle
+author: $author
+year: $year"
+
 # Get a safe file name from the book.
 escbook="./media/$(echo "$booktitle" | iconv -cf UTF-8 -t ASCII//TRANSLIT | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed "s/-\+/-/g;s/\(^-\|-\$\)//g")"
 
@@ -16,7 +22,7 @@ escbook="./media/$(echo "$booktitle" | iconv -cf UTF-8 -t ASCII//TRANSLIT | tr -
 
 # As long as the extension is in the tag script, it'll work.
 ext="opus"
-#ext="${1#*.}"
+# ext="${1#*.}"
 
 # Get the total number of tracks from the number of lines.
 total="$(wc -l < "$2")"
@@ -28,9 +34,8 @@ do
 	[ -n "$start" ] &&
 	echo "From $start to $end; $track $title"
 	file="$escbook/$(printf "%.2d" "$track")-$esctitle.$ext"
-	[ -n "$start" ] && echo "Splitting \"$title\"..." &&
-   	ffmpeg -nostdin -y -loglevel -8 -i "$inputaudio" -ss "$start" -to "$end" -vn -c copy "$file" &&
-	echo "Tagging \"$title\"..." && ./tag -a "$author" -A "$booktitle" -t "$title" -n "$track" -N "$total" -d "$year" "$file"
+	[ -n "$start" ] && echo "Splitting \"$title\"..." && ffmpeg -nostdin -y -loglevel -8 -i "$inputaudio" -ss "$start" -to "$end" -vn -c copy "$file"
+    echo "Tagging \"$title\"..." && sh ./scripts/tag -a "$author" -A "$booktitle" -t "$title" -n "$track" -N "$total" -d "$year" "$file"
 	title="$(echo "$x" | cut -d' ' -f 2-)"
 	esctitle="$(echo "$title" | iconv -cf UTF-8 -t ASCII//TRANSLIT | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed "s/-\+/-/g;s/\(^-\|-\$\)//g")"
 	track="$((track+1))"
@@ -39,5 +44,5 @@ done < "$2"
 # The last track must be done outside the loop.
 echo "From $start to the end: $title"
 file="$escbook/$(printf "%.2d" "$track")-$esctitle.$ext"
-echo "Splitting \"$title\"..." && ffmpeg -nostdin -y -loglevel -8 -i "$inputaudio" -ss "$start" -vn -c copy "$file" &&
-		echo "Tagging \"$title\"..." && ./tag -a "$author" -A "$booktitle" -t "$title" -n "$track" -N "$total" -d "$year" "$file"
+echo "Splitting \"$title\"..." && ffmpeg -nostdin -y -loglevel -8 -i "$inputaudio" -ss "$start" -vn -c copy "$file" && \
+    echo "Tagging \"$title\"..." & sh ./scripts/tag -a "$author" -A "$booktitle" -t "$title" -n "$track" -N "$total" -d "$year" "$file"

@@ -34,7 +34,7 @@ def get_album_info(self, url):
     title = message["title"]
     artist = message["uploader"]
     description = message['description']
-    playlist = get_timecodes(description.splitlines()[1:])
+    playlist = get_timecodes(description.splitlines())
     comment_playlists = []
     if not playlist:
         progress_recorder.set_progress(2, num_tasks, description=f'looking in comments for timecodes')
@@ -80,7 +80,8 @@ def download(self, info):
         ydl_opts = {
             'outtmpl': 'media/%(id)s.%(ext)s',
             'extractaudio': True,
-            'format': 'bestaudio/best',
+            'audio-quality': 'bestaudio/best',
+            'audio-format': 'opus',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
             }],
@@ -90,7 +91,8 @@ def download(self, info):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
         with open(f'media/{titleid}.txt', "w+") as f:
-            f.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
+            f.write(timecodes + '\n')
+            # f.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
 
     tagurl = FileSystemStorage().url(f'{titleid}.txt')
     longmediaurl = FileSystemStorage().url(f'{titleid}.opus')

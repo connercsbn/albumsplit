@@ -160,6 +160,7 @@ export default function HorizontalLinearStepper({
                 Back
               </Button>
               <NextButton
+                style={{ zIndex: 200 }}
                 activeStep={activeStep}
                 albumUrl={albumUrl}
                 steps={steps}

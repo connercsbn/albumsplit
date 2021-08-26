@@ -6,13 +6,9 @@ import Stepper from "./modules/Stepper";
 import EditableAlbumAttribute from "./modules/EditableAlbumAttribute";
 import {
   Select,
-  Tooltip,
-  Link,
   makeStyles,
   MenuItem,
   FormControl,
-  Button,
-  Fade,
   InputLabel,
   LinearProgress,
   CssBaseline,
@@ -24,7 +20,6 @@ import gruvBox from "./style/gruvBox";
 // import Header from "./modules/Header";
 import { useState, useEffect } from "react";
 import handleToken from "./utils/handleToken";
-import { mergeClasses } from "@material-ui/styles";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -34,7 +29,9 @@ function App() {
   const [percent, setPercent] = useState("");
   const [complete, setComplete] = useState(false);
   const [fetchedUrl, setFetchedUrl] = useState("");
-  const [originalAlbumInfo, setOriginalAlbumInfo] = useState([]);
+  const [originalAlbumInfo, setOriginalAlbumInfo] = useState({
+    timecodes: [""],
+  });
   const [albumUrl, setAlbumUrl] = useState("");
   const [albumTitleId, setAlbumTitleId] = useState("");
   const [albumTimeCodes, setAlbumTimeCodes] = useState([]);
@@ -44,6 +41,7 @@ function App() {
   const [zipUrl, setZipUrl] = useState("");
   const [audioType, setAudioType] = useState("opus");
   const [timeCodesIndex, setTimeCodesIndex] = useState(0);
+  const [timeCodesString, setTimeCodesString] = useState("");
 
   const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -76,7 +74,7 @@ function App() {
         title: albumTitle,
         url: albumUrl,
         titleid: albumTitleId,
-        timecodes: albumTimeCodes,
+        timecodes: timeCodesString,
         artist: albumArtist,
         year: albumYear,
       }),
@@ -114,8 +112,11 @@ function App() {
             setLoading(false);
             console.log("complete");
           } else {
-            setZipUrl(json.result.zipurl);
-            setLoading(false);
+            if (json.result.zipurl) {
+              setComplete(true);
+              setZipUrl(json.result.zipurl);
+              setLoading(false);
+            }
           }
         }
       }, 500);
@@ -219,10 +220,13 @@ function App() {
         </FormControl>
       </div>
       <TimeCodesDisplayer
-        original={albumTimeCodes}
+        timeCodesIndex={timeCodesIndex}
+        original={originalAlbumInfo.timecodes}
         timeCodes={albumTimeCodes}
         index={timeCodesIndex}
         setIndex={setTimeCodesIndex}
+        timeCodesString={timeCodesString}
+        setTimeCodesString={setTimeCodesString}
       />
     </>
   );
@@ -239,7 +243,10 @@ function App() {
     <>
       <ThemeProvider theme={gruvBox}>
         <CssBaseline />
-        <Container maxWidth="md">
+        <Container
+          maxWidth="md"
+          style={{ padding: "0 4em", overflow: "hidden" }}
+        >
           <Typography
             variant="h3"
             style={{
