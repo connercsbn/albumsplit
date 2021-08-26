@@ -91,27 +91,29 @@ def download(self, info):
             ydl.download([url])
         with open(f'media/{titleid}.txt', "w+") as f:
             f.write(timecodes + '\n')
-            # f.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
 
     tagurl = FileSystemStorage().url(f'{titleid}.txt')
-    longmediaurl = FileSystemStorage().url(f'{titleid}.m4a')
-    if not Path('.' + longmediaurl).is_file():
-        longmediaurl = FileSystemStorage().url(f'{titleid}.opus')
+    tagfile = f'{titleid}.txt'
+    mediaurl = FileSystemStorage().url(f'{titleid}.m4a')
+    mediafile = f'{titleid}.m4a'
+    if not Path('.' + mediaurl).is_file():
+        mediaurl = FileSystemStorage().url(f'{titleid}.opus')
+        mediafile = f'{titleid}.opus'
     escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE) \
         .stdout.read().decode("utf-8").split('\n')[0]
     progress_recorder.set_progress(2, num_tasks, 
         description=f'splitting audio & tagging tracks')
+    os.chdir(MEDIA_ROOT)
     process1 = subprocess.Popen([
         booksplit_path, 
-        f'.{longmediaurl}', 
-        f'.{tagurl}', 
+        f'{mediafile}', 
+        f'{tagfile}', 
         f'{title}', 
         f'{artist}', 
         f'{year}'], stdout=PIPE, stderr=PIPE)
     messages = []
     messages.append(process1.stdout.read().decode("utf-8").rstrip().split('\n'))
     messages.append(process1.stderr.read().decode("utf-8").rstrip())
-    os.chdir(MEDIA_ROOT)
     progress_recorder.set_progress(3, num_tasks, description=f'compressing folder')
     process2 = subprocess.Popen([
         'zip', '-r', f'{escapedtitle}.zip', f'{escapedtitle}'
@@ -123,7 +125,7 @@ def download(self, info):
     progress_recorder.set_progress(4, num_tasks, description=f'done')
     return {
         'zipurl': zipurl,
-        'longmediaurl': longmediaurl,
+        'longmediaurl': mediaurl,
         'tagurl': tagurl,
         'messages': messages
     }
