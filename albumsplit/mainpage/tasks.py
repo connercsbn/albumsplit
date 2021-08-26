@@ -7,9 +7,9 @@ from subprocess import PIPE
 from youtube_comment_downloader import downloader
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
-import shlex
+import json
 from albumsplit.settings import BASE_DIR, SCRIPTS_DIR, MEDIA_ROOT
-
+from pathlib import Path
 
 
 @shared_task(bind=True)
@@ -81,7 +81,6 @@ def download(self, info):
             'outtmpl': 'media/%(id)s.%(ext)s',
             'extractaudio': True,
             'audio-quality': 'bestaudio/best',
-            'audio-format': 'opus',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
             }],
@@ -95,7 +94,9 @@ def download(self, info):
             # f.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
 
     tagurl = FileSystemStorage().url(f'{titleid}.txt')
-    longmediaurl = FileSystemStorage().url(f'{titleid}.opus')
+    longmediaurl = FileSystemStorage().url(f'{titleid}.m4a')
+    if not Path('.' + longmediaurl).is_file():
+        longmediaurl = FileSystemStorage().url(f'{titleid}.opus')
     escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE) \
         .stdout.read().decode("utf-8").split('\n')[0]
     progress_recorder.set_progress(2, num_tasks, 
@@ -144,7 +145,7 @@ def exists_already(id):
         if id in file:
             print(f'found file {file} matching id {id}')
             return True
-    print(f'didn\'t a video file matching the id {id}')
+    print(f'didn\'t find a video file matching the id {id}')
     return False
 
 def clean_up():
