@@ -250,9 +250,12 @@ function App() {
           <Typography
             variant="h3"
             style={{
+              textDecoration: "underline var(--cyan)",
+              borderRadius: "50px",
               textAlign: "center",
-              color: "var(--cyan)",
-              padding: "1em",
+              color: "var(--blue)",
+              padding: "1em 0",
+              fontWeight: "bold",
             }}
           >
             Albumsplit

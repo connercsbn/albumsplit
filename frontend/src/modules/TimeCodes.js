@@ -13,14 +13,6 @@ const getTimeCodeLabel = (index) => {
   }
 };
 
-function getArrayDepth(value) {
-  const depth = Array.isArray(value)
-    ? 1 + Math.max(...value.map(getArrayDepth))
-    : 0;
-  console.log(value);
-  return depth;
-}
-
 const TimeCodes = ({
   timeCodes,
   timeCodesList,
@@ -98,6 +90,7 @@ const TimeCodes = ({
           }
           maxRows={13}
           minRows={13}
+          color="secondary"
           value={timeCodesString}
           onChange={(e) => setTimeCodesString(e.target.value)}
           square={false}
@@ -114,29 +107,3 @@ const TimeCodes = ({
 };
 
 export default TimeCodes;
-
-// {timeCodesToString(original) !== timeCodesString && (
-//   <Tooltip title="Reset" placement="right">
-//     <Button
-//       onClick={handleReset}
-//       style={{
-//         zIndex: 400,
-//         top: 0,
-//         right: 0,
-//         height: "min-content",
-//         width: "min-content",
-//         alignSelf: "center",
-//         color: "var(--blue)",
-//         minWidth: 0,
-//       }}
-//     >
-//       <ReplayIcon
-//         fontSize="small"
-//         style={{
-//           width: 20,
-//           height: 20,
-//         }}
-//       />
-//     </Button>
-//   </Tooltip>
-// )}
