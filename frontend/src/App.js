@@ -249,8 +249,11 @@ function App() {
         >
           <Typography
             variant="h3"
+            href="google.com"
+            onClick={() => window.location.reload()}
             style={{
-              textDecoration: "underline var(--cyan)",
+              cursor: "pointer",
+              textDecoration: "underline var(--cyan) 5px",
               borderRadius: "50px",
               textAlign: "center",
               color: "var(--blue)",
