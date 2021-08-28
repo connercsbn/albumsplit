@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ["Input YouTube link", "Confirm tracklist", "Download"];
+  return ["Input YouTube link", "Confirm tracklist", "Prepare download"];
 }
 
 export default function HorizontalLinearStepper({
@@ -115,9 +115,10 @@ export default function HorizontalLinearStepper({
   setLoading,
   handleUrlChange,
   zipUrl,
+  setActiveStep,
+  activeStep,
 }) {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
   const [stepsContent, setStepsContent] = useState(0);
   const steps = getSteps();
 
@@ -131,7 +132,7 @@ export default function HorizontalLinearStepper({
       }
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     },
-    [handleFinalize, handleSubmit]
+    [handleFinalize, handleSubmit, setActiveStep]
   );
 
   const submitUrlStep = useMemo(
@@ -168,6 +169,7 @@ export default function HorizontalLinearStepper({
       submitUrlStep,
       initialStepsContent[0],
       initialStepsContent[1],
+      initialStepsContent[2],
     ]);
   }, [initialStepsContent, submitUrlStep]);
 
@@ -205,7 +207,7 @@ export default function HorizontalLinearStepper({
             </Typography>
             <Button
               variant="contained"
-              color="warning"
+              color="primary"
               onClick={handleReset}
               className={classes.button}
             >

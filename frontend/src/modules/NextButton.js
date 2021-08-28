@@ -1,5 +1,6 @@
 import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core/styles";
 
 export default function NextButton({
   activeStep,
@@ -9,19 +10,7 @@ export default function NextButton({
   classes,
 }) {
   if (activeStep === 2) {
-    return (
-      <Button
-        disabled={!zipUrl}
-        variant="contained"
-        color="primary"
-        onClick={() => {
-          handleNext(activeStep);
-        }}
-        className={classes.button}
-      >
-        <Link href={"http://localhost:8000" + zipUrl}>Download</Link>
-      </Button>
-    );
+    return ''
   } else {
     return (
       <Button

@@ -9,6 +9,7 @@ import {
   makeStyles,
   MenuItem,
   FormControl,
+  Button,
   InputLabel,
   LinearProgress,
   CssBaseline,
@@ -42,6 +43,7 @@ function App() {
   const [audioType, setAudioType] = useState("opus");
   const [timeCodesIndex, setTimeCodesIndex] = useState(0);
   const [timeCodesString, setTimeCodesString] = useState("");
+  const [activeStep, setActiveStep] = useState(0);
 
   const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -116,6 +118,7 @@ function App() {
               setComplete(true);
               setZipUrl(json.result.zipurl);
               setLoading(false);
+              setActiveStep(3);
             }
           }
         }
@@ -239,6 +242,25 @@ function App() {
     </>
   );
 
+  const downloadButton = (
+    <>
+      <Button
+      color="secondary"
+      style={{
+        display: 'flex',
+        margin: "auto",
+        textAlign: "center",
+        fontSize: '1.2em',
+        maxWidth: '9em'
+      }}
+      variant="contained"
+      href={'http://localhost:8000' + zipUrl}
+      >
+        Download
+      </Button>
+    </>
+  );
+
   return (
     <>
       <ThemeProvider theme={gruvBox}>
@@ -248,17 +270,16 @@ function App() {
           style={{ padding: "0 4em", overflow: "hidden" }}
         >
           <Typography
-            variant="h3"
+            variant="h2"
             href="google.com"
             onClick={() => window.location.reload()}
             style={{
               cursor: "pointer",
               textDecoration: "underline var(--cyan) 5px",
-              borderRadius: "50px",
-              textAlign: "center",
               color: "var(--blue)",
-              padding: "1em 0",
-              fontWeight: "bold",
+              padding: ".5em 0",
+              fontWeight: "normal",
+              textAlign: "left",
             }}
           >
             Albumsplit
@@ -266,7 +287,11 @@ function App() {
           <div className="App">
             {/* <Header /> */}
             <Stepper
-              initialStepsContent={[approveInfoStep, downloadStep]}
+              initialStepsContent={[
+                approveInfoStep,
+                downloadStep,
+                downloadButton,
+              ]}
               handleSubmit={handleSubmit}
               handleFinalize={handleFinalize}
               albumUrl={albumUrl}
@@ -274,6 +299,8 @@ function App() {
               setLoading={setLoading}
               handleUrlChange={handleUrlChange}
               zipUrl={zipUrl}
+              setActiveStep={setActiveStep}
+              activeStep={activeStep}
             />
           </div>
         </Container>

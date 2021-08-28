@@ -22,6 +22,9 @@ const gruvBox = createTheme({
     secondary: {
       main: colors.yellow,
     },
+    warning: {
+      main: colors.purple,
+    },
     text: {
       primary: colors.white,
       secondary: colors.white,
