@@ -20,6 +20,7 @@ const TimeCodes = ({
   showingIndex,
   curr,
   timeCodesString,
+  split,
   setTimeCodesString,
 }) => {
   const [animStyle, api] = useSpring(() => ({
@@ -88,6 +89,7 @@ const TimeCodes = ({
           label={
             timeCodesList?.length > 1 ? getTimeCodeLabel(curr) : "Timecodes"
           }
+          disabled={!split}
           maxRows={13}
           minRows={13}
           color="secondary"

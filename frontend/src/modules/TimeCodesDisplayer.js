@@ -17,6 +17,7 @@ const TimeCodesDisplayer = ({
   setIndex,
   timeCodesIndex,
   timeCodesString,
+  split,
   setTimeCodesString,
 }) => {
   const getZ = (curr) => {
@@ -62,6 +63,7 @@ const TimeCodesDisplayer = ({
                 style={{ position: "absolute" }}
                 showingIndex={index}
                 curr={curr}
+                split={split}
                 timeCodesList={timeCodes}
                 timeCodes={tc}
                 original={original}

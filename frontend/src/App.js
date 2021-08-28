@@ -7,8 +7,9 @@ import EditableAlbumAttribute from "./modules/EditableAlbumAttribute";
 import {
   Select,
   makeStyles,
-  MenuItem,
   FormControl,
+  FormControlLabel,
+  MenuItem,
   Button,
   InputLabel,
   LinearProgress,
@@ -16,6 +17,7 @@ import {
   Container,
   Typography,
   ThemeProvider,
+  Checkbox,
 } from "@material-ui/core";
 import gruvBox from "./style/gruvBox";
 // import Header from "./modules/Header";
@@ -33,6 +35,7 @@ function App() {
   const [originalAlbumInfo, setOriginalAlbumInfo] = useState({
     timecodes: [""],
   });
+  const [split, setSplit] = useState(true);
   const [albumUrl, setAlbumUrl] = useState("");
   const [albumTitleId, setAlbumTitleId] = useState("");
   const [albumTimeCodes, setAlbumTimeCodes] = useState([]);
@@ -79,6 +82,7 @@ function App() {
         timecodes: timeCodesString,
         artist: albumArtist,
         year: albumYear,
+        split: split,
       }),
     });
     const json = await res.json();
@@ -176,6 +180,17 @@ function App() {
         original={originalAlbumInfo.year}
         label="Year"
       />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={split}
+            onChange={() => setSplit(!split)}
+            name="Split tracks"
+            color="primary"
+          />
+        }
+        label="Split tracks"
+      />
       <div
         style={{
           display: "flex",
@@ -225,6 +240,7 @@ function App() {
       <TimeCodesDisplayer
         timeCodesIndex={timeCodesIndex}
         original={originalAlbumInfo.timecodes}
+        split={split}
         timeCodes={albumTimeCodes}
         index={timeCodesIndex}
         setIndex={setTimeCodesIndex}
@@ -236,25 +252,23 @@ function App() {
   const downloadStep = currentTask && (
     <>
       <LinearProgress variant={"determinate"} value={percent} />
-      <Typography>
-        {currentTask} <br /> {percent}
-      </Typography>
+      <Typography>{currentTask}</Typography>
     </>
   );
 
   const downloadButton = (
     <>
       <Button
-      color="secondary"
-      style={{
-        display: 'flex',
-        margin: "auto",
-        textAlign: "center",
-        fontSize: '1.2em',
-        maxWidth: '9em'
-      }}
-      variant="contained"
-      href={'http://localhost:8000' + zipUrl}
+        color="secondary"
+        style={{
+          display: "flex",
+          margin: "auto",
+          textAlign: "center",
+          fontSize: "1.2em",
+          maxWidth: "9em",
+        }}
+        variant="contained"
+        href={"http://localhost:8000" + zipUrl}
       >
         Download
       </Button>
