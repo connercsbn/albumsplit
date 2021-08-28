@@ -71,19 +71,19 @@ def download(self, info):
     if not exists_already(titleid):
         def get_percentage(d):
             if d['status'] == 'finished':
-                progress_recorder.set_progress(8, num_tasks, description='Downloading (100%)')
+                progress_recorder.set_progress(7, num_tasks, description='Downloading (100%)')
                 return '100%'
             if d['status'] == 'downloading':
                 percentage_progress = d['_percent_str']
                 percent = percentage_progress.strip().strip('%')
                 # get overall progress from download progress, 
                 # assuming download takes 6/10 of the progress bar
-                overall_percentage = (float(percent) * .01) * .8 * num_tasks
+                overall_percentage = (float(percent) * .01) * .7 * num_tasks
                 progress_recorder.set_progress(overall_percentage, num_tasks, 
                     description=f'Downloading ({percentage_progress.strip()})')
 
         ydl_opts = {
-            'outtmpl': 'media/%(id)s.%(ext)s',
+            'outtmpl': f'{MEDIA_ROOT}/%(id)s.%(ext)s',
             'extractaudio': True,
             'audio-quality': 'bestaudio/best',
             'postprocessors': [{
@@ -95,7 +95,7 @@ def download(self, info):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
         if split:
-            with open(f'media/{titleid}.txt', "w+") as f:
+            with open(os.path.join(MEDIA_ROOT, f'{titleid}.txt'), "w+") as f:
                 f.write(timecodes + '\n')
 
     tagurl = FileSystemStorage().url(f'{titleid}.txt')
@@ -113,7 +113,7 @@ def download(self, info):
     os.chdir(MEDIA_ROOT)
 
     if split:
-        progress_recorder.set_progress(6, num_tasks, 
+        progress_recorder.set_progress(8, num_tasks, 
             description=f'splitting audio & tagging tracks')
         split_process = subprocess.Popen([
             booksplit_path, 
@@ -124,7 +124,7 @@ def download(self, info):
             f'{year}'], stdout=PIPE, stderr=PIPE)
         messages.append(split_process.stdout.read().decode("utf-8").rstrip().split('\n'))
         messages.append(split_process.stderr.read().decode("utf-8").rstrip())
-        progress_recorder.set_progress(8, num_tasks, description=f'Compressing result')
+        progress_recorder.set_progress(9, num_tasks, description=f'Compressing result')
         compress_process = subprocess.Popen([
             'zip', '-r', f'{escapedtitle}.zip', f'{escapedtitle}'
             ], stdout=PIPE, stderr=PIPE)
@@ -136,7 +136,8 @@ def download(self, info):
         ext = os.path.splitext(mediaurl)[1]
         os.rename(f'..{mediaurl}', escapedtitle + ext)
         zipurl = FileSystemStorage().url(escapedtitle + ext)
-    progress_recorder.set_progress(10, num_tasks, description='Finished')
+    progress_recorder.set_progress(num_tasks, num_tasks, description='Finished')
+    os.chdir(BASE_DIR)
 
     return {
         'zipurl': zipurl,
@@ -178,4 +179,3 @@ def clean_up():
             os.remove(file)
         if os.path.isdir(file):
             shutil.rmtree(file)
-    os.chdir(BASE_DIR)
