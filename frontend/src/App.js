@@ -3,6 +3,7 @@ import "@fontsource/roboto";
 import Cookies from "js-cookie";
 import TimeCodesDisplayer from "./modules/TimeCodesDisplayer";
 import Stepper from "./modules/Stepper";
+import WebFont from "webfontloader";
 import EditableAlbumAttribute from "./modules/EditableAlbumAttribute";
 import {
   Select,
@@ -58,6 +59,14 @@ function App() {
     },
   }));
   const classes = useStyles();
+
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: ["Roboto Slab", "Droid Sans", "Chilanka"],
+      },
+    });
+  }, []);
 
   const handleAudioTypeChange = (e) => {
     setAudioType(e.target.value);
@@ -285,14 +294,15 @@ function App() {
         >
           <Typography
             variant="h2"
-            href="google.com"
             onClick={() => window.location.reload()}
             style={{
+              width: "max-content",
               cursor: "pointer",
               textDecoration: "underline var(--cyan) 5px",
               color: "var(--blue)",
               padding: ".5em 0",
               fontWeight: "normal",
+              fontFamily: "Roboto Slab",
               textAlign: "left",
             }}
           >

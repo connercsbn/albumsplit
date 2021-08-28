@@ -1,14 +1,12 @@
-from posixpath import splitext
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
-import requests, youtube_dl, re, subprocess, os, string, re
-import time, shutil, io
+import youtube_dl, re, subprocess, os, re
+import shutil
 import time
 from subprocess import PIPE
 from youtube_comment_downloader import downloader
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
-import json
 from albumsplit.settings import BASE_DIR, SCRIPTS_DIR, MEDIA_ROOT
 from pathlib import Path
 
@@ -113,6 +111,7 @@ def download(self, info):
     os.chdir(MEDIA_ROOT)
 
     if split:
+        # if serving album directory
         progress_recorder.set_progress(8, num_tasks, 
             description=f'splitting audio & tagging tracks')
         split_process = subprocess.Popen([

@@ -18,6 +18,7 @@ import LinkIcon from "@material-ui/icons/InsertLinkRounded";
 import ListIcon from "@material-ui/icons/FormatAlignLeftRounded";
 import DoneIcon from "@material-ui/icons/DoneRounded";
 import DownloadIcon from "@material-ui/icons/CloudDownload";
+import { set } from "js-cookie";
 
 function ColorlibStepIcon(props) {
   const classes = useColorlibStepIconStyles();
@@ -122,6 +123,14 @@ export default function HorizontalLinearStepper({
   const [stepsContent, setStepsContent] = useState(0);
   const steps = getSteps();
 
+  const handleIconClick = (index) => {
+    if (activeStep > index) {
+      setActiveStep(index);
+    } else if (index === 1 && albumUrl) {
+      handleNext();
+    }
+  };
+
   const handleNext = useCallback(
     (step) => {
       console.log(step);
@@ -192,7 +201,10 @@ export default function HorizontalLinearStepper({
         {steps.map((label, index) => {
           return (
             <Step key={label}>
-              <StepLabel StepIconComponent={ColorlibStepIcon}>
+              <StepLabel
+                onClick={() => handleIconClick(index)}
+                StepIconComponent={ColorlibStepIcon}
+              >
                 {label}
               </StepLabel>
             </Step>
@@ -228,13 +240,13 @@ export default function HorizontalLinearStepper({
                 }}
               >
                 <p>
-                  Pick a youtube album or audiobook whose timecodes are in the
+                  Pick a YouTube album or audio book whose timecodes are in the
                   description or comments, and this will download the album,
                   separate and tag each track, and put it in a zip file
                 </p>
               </Paper>
               <SyncLoader
-                loading={loading && activeStep < 2}
+                loading={loading && activeStep === 1}
                 size={15}
                 color="#8ec07c"
                 css={css`
