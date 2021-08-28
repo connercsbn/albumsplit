@@ -196,6 +196,9 @@ export default function HorizontalLinearStepper({
       <Stepper
         activeStep={activeStep}
         alternativeLabel
+        style={{
+          backgroundColor: "unset",
+        }}
         connector={<ColorlibConnector />}
       >
         {steps.map((label, index) => {
@@ -230,12 +233,12 @@ export default function HorizontalLinearStepper({
           <div>
             <Typography className={classes.instructions} variant="subtitle1">
               <Paper
-                elevation={4}
                 variant="elevation"
+                elevation={3}
                 style={{
-                  backgroundColor: "#b5c6df14",
                   padding: "0.01em 1em",
                   margin: "1em 0",
+                  backgroundColor: "rgba(40,40,40,.9)",
                   // border: "1px solid rgba(255,255,255,.2)",
                 }}
               >

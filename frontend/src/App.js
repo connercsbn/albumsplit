@@ -290,25 +290,28 @@ function App() {
         <CssBaseline />
         <Container
           maxWidth="md"
-          style={{ padding: "0 4em", overflow: "hidden" }}
+          style={{
+            padding: "0 4em",
+            overflow: "hidden",
+          }}
         >
-          <Typography
-            variant="h2"
-            onClick={() => window.location.reload()}
-            style={{
-              width: "max-content",
-              cursor: "pointer",
-              textDecoration: "underline var(--cyan) 5px",
-              color: "var(--blue)",
-              padding: ".5em 0",
-              fontWeight: "normal",
-              fontFamily: "Roboto Slab",
-              textAlign: "left",
-            }}
-          >
-            Albumsplit
-          </Typography>
           <div className="App">
+            <Typography
+              variant="h2"
+              onClick={() => window.location.reload()}
+              style={{
+                width: "max-content",
+                cursor: "pointer",
+                textDecoration: "underline var(--cyan) 5px",
+                color: "var(--blue)",
+                padding: ".5em 0",
+                fontWeight: "normal",
+                fontFamily: "Roboto Slab",
+                textAlign: "left",
+              }}
+            >
+              Albumsplit
+            </Typography>
             {/* <Header /> */}
             <Stepper
               initialStepsContent={[
