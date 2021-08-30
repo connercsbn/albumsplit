@@ -148,12 +148,12 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'public')
-STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-SCRIPTS_DIR = os.path.join(BASE_DIR, 'scripts')
+MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = BASE_DIR / 'public'
+SCRIPTS_DIR = BASE_DIR / 'scripts'
 
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # make this true in production
 CSRF_COOKIE_SECURE = False
