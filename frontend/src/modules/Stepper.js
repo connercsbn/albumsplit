@@ -253,9 +253,12 @@ export default function HorizontalLinearStepper({
                 size={15}
                 color="#8ec07c"
                 css={css`
+                  position: absolute;
                   display: block;
-                  margin: auto;
+                  margin: 7em auto;
                   text-align: center;
+                  left: 50%;
+                  left: calc(50% - 28px);
                 `}
               />
               {stepsContent[activeStep]}
