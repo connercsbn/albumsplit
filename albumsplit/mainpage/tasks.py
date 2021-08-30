@@ -73,10 +73,10 @@ def download(self, info):
                 return '100%'
             if d['status'] == 'downloading':
                 percentage_progress = d['_percent_str']
-                percent = percentage_progress.strip().strip('%')
+                percent = float(percentage_progress.strip().strip('%'))
                 # get overall progress from download progress, 
                 # assuming download takes 6/10 of the progress bar
-                overall_percentage = (float(percent) * .01) * .7 * num_tasks
+                overall_percentage = (percent * .01) * .7 * num_tasks
                 progress_recorder.set_progress(overall_percentage, num_tasks, 
                     description=f'Downloading ({percentage_progress.strip()})')
 
