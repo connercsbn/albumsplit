@@ -106,6 +106,9 @@ const useStyles = makeStyles((theme) => ({
 function getSteps() {
   return ["Input YouTube link", "Confirm tracklist", "Prepare download"];
 }
+function getInstruction(activeStep) {
+  return ['Pick a YouTube album or audio book whose timecodes are in the description or comments, and this will download the album, separate and tag each track, and put it in a zip file','Here are the best timestamps we could find. These will be used to split the album, so fix any mistakes here or write your own.'][activeStep]
+}
 
 export default function HorizontalLinearStepper({
   initialStepsContent,
@@ -196,6 +199,9 @@ export default function HorizontalLinearStepper({
       <Stepper
         activeStep={activeStep}
         alternativeLabel
+        style={{
+          backgroundColor: "unset",
+        }}
         connector={<ColorlibConnector />}
       >
         {steps.map((label, index) => {
@@ -229,22 +235,18 @@ export default function HorizontalLinearStepper({
         ) : (
           <div>
             <Typography className={classes.instructions} variant="subtitle1">
-              <Paper
-                elevation={4}
+		{activeStep < 2 && <Paper
                 variant="elevation"
+                elevation={3}
                 style={{
-                  backgroundColor: "#b5c6df14",
                   padding: "0.01em 1em",
                   margin: "1em 0",
+                  //backgroundColor: "rgba(40,40,40,.9)",
                   // border: "1px solid rgba(255,255,255,.2)",
                 }}
               >
-                <p>
-                  Pick a YouTube album or audio book whose timecodes are in the
-                  description or comments, and this will download the album,
-                  separate and tag each track, and put it in a zip file
-                </p>
-              </Paper>
+		<p>{getInstruction(activeStep)}</p>
+              </Paper>}
               <SyncLoader
                 loading={loading && activeStep === 1}
                 size={15}
