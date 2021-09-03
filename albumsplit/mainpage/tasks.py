@@ -75,7 +75,7 @@ def download(self, info):
                 percentage_progress = d['_percent_str']
                 percent = float(percentage_progress.strip().strip('%'))
                 # get overall progress from download progress, 
-                # assuming download takes 6/10 of the progress bar
+                # assuming download takes 7/10 of the progress bar
                 overall_percentage = (percent * .01) * .7 * num_tasks
                 progress_recorder.set_progress(overall_percentage, num_tasks, 
                     description=f'Downloading ({percentage_progress.strip()})')
@@ -100,7 +100,7 @@ def download(self, info):
     tagfile = f'{titleid}.txt'
     mediaurl = FileSystemStorage().url(f'{titleid}.m4a')
     mediafile = f'{titleid}.m4a'
-    if not Path('.' + mediaurl).is_file():
+    if not (Path(MEDIA_ROOT) / mediafile).is_file():
         mediaurl = FileSystemStorage().url(f'{titleid}.opus')
         mediafile = f'{titleid}.opus'
     escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE) \
@@ -159,7 +159,7 @@ def get_timecodes(text):
 
 def exists_already(id):
     for file in os.listdir(MEDIA_ROOT):
-        if id in file:
+        if id in file and os.path.splitext(file)[1] != '.part':
             print(f'found file {file} matching id {id}')
             return True
     print(f'didn\'t find a video file matching the id {id}')

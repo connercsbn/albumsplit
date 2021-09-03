@@ -1,0 +1,12 @@
+body {
+    background-image: linear-gradient(rgba(30,30,30,.8), rgba(30,30,30,.8)), 
+    url('./images/File_014.jpeg');
+    background-position: center;
+    background-size: cover;
+}
+html, body, #app, #app>div {
+	  min-height: 100%;
+  }
+body > #root > div {
+	  min-height: 100vh;
+  }
