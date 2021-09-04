@@ -19,7 +19,7 @@ def get_album_info(self, url):
     progress_recorder.set_progress(1, num_tasks, description=f'looking in description for timecodes')
     print('start')
     ydl_opts = {
-        'outtmpl': 'media/%(id)s.%(ext)s',
+        'outtmpl': f'{MEDIA_ROOT}/%(id)s.%(ext)s',
         'extractaudio': True,
         'format': 'bestaudio/best',
         'postprocessors': [{
@@ -133,7 +133,7 @@ def download(self, info):
     
     else: # if just serving the single opus or m4a file
         ext = os.path.splitext(mediaurl)[1]
-        os.rename(f'..{mediaurl}', escapedtitle + ext)
+        os.rename(f'{mediafile}', escapedtitle + ext)
         zipurl = FileSystemStorage().url(escapedtitle + ext)
     progress_recorder.set_progress(num_tasks, num_tasks, description='Finished')
     os.chdir(BASE_DIR)
