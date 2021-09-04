@@ -78,11 +78,44 @@ const useColorlibStepIconStyles = makeStyles({
     alignItems: "center",
   },
   active: {
-    backgroundImage:
-      "linear-gradient( 136deg, var(--yellow) 0%, var(--yellow) 50%, var(--purple) 100%)",
+    position: 'relative',
+    background:
+      'linear-gradient( 136deg, #ffca4e 0%, #e6b23a 50%, #994537 100%)',
     boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    '&::before': {
+      position: 'absolute',
+      content: '""',
+      top:0,right:0,bottom:0,left:0,
+      borderRadius:'50%',
+      backgroundImage: 'linear-gradient( 136deg, #fffc 0%, #e8aa1899 50%, #664d1c 100%)',
+      
+      zIndex: -1,
+      transition: 'opacity 0.2s ease',
+      opacity: 0
+    },
+    '&:hover, &:focus': {
+      '&::before': {
+        opacity: 0.8
+      }
+    }
   },
   completed: {
+    position: 'relative',
+    '&::before': {
+      position: 'absolute',
+      content: '""',
+      top:0,right:0,bottom:0,left:0,
+      borderRadius:'50%',
+      backgroundImage: 'linear-gradient(136deg, #bfe8b1 0%, #4b8256 60%, #50826e 100%)',
+      zIndex: -1,
+      transition: 'opacity 0.2s ease',
+      opacity: 0
+    },
+    '&:hover, &:focus': {
+      '&::before': {
+        opacity: 0.5
+      }
+    },
     backgroundImage:
       "linear-gradient( 136deg, var(--cyan) 0%, var(--blue) 60%, var(--blue) 100%)",
   },
@@ -129,7 +162,7 @@ export default function HorizontalLinearStepper({
   const handleIconClick = (index) => {
     if (activeStep > index) {
       setActiveStep(index);
-    } else if (index === 1 && albumUrl) {
+    } else if (index === 1 && activeStep === 0 && albumUrl) {
       handleNext();
     }
   };
@@ -201,6 +234,7 @@ export default function HorizontalLinearStepper({
         alternativeLabel
         style={{
           backgroundColor: "unset",
+          padding: '1em 0.4em'
         }}
         connector={<ColorlibConnector />}
       >

@@ -1,0 +1,10 @@
+@media (max-width: 1065px) {
+  #heading {
+      margin: auto;
+  }
+}
+@media (max-width: 420px) {
+    #heading {
+        font-size: 16vw;
+    }
+}
