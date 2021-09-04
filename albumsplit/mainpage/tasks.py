@@ -40,7 +40,7 @@ def get_album_info(self, url):
         message = downloader.main(['--youtubeid', titleid, '--output', 'thing', '--sort', '0', '--limit', '50'])
         for comment in message:
             comment_playlists.append(get_timecodes(comment))
-        timecodes = comment_playlists
+        timecodes = comment_playlists or [[]]
     else:
         timecodes = [playlist]
     progress_recorder.set_progress(3, num_tasks, description=f'done')
@@ -65,7 +65,12 @@ def download(self, info):
     info['url'], info['titleid'], info['timecodes'], \
     info['title'], info['artist'], info['year'], info['split']
 
-
+    # if timecodes don't have content, don't split
+    if not len(timecodes.strip()):
+        split = False
+        
+    print(len(timecodes.strip()))
+    print(split)
     if not exists_already(titleid):
         def get_percentage(d):
             if d['status'] == 'finished':

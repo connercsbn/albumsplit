@@ -15,7 +15,6 @@ const TimeCodesDisplayer = ({
   original,
   index,
   setIndex,
-  timeCodesIndex,
   timeCodesString,
   split,
   setTimeCodesString,
@@ -57,6 +56,7 @@ const TimeCodesDisplayer = ({
           timeCodes.map((tc, curr) => (
             <div
               id="timecodes"
+              key={curr}
               style={{ ...getZ(curr), position: "relative", width: "100%" }}
             >
               <TimeCodes
@@ -72,20 +72,11 @@ const TimeCodesDisplayer = ({
               />
             </div>
           ))
-        ) : (
-          <div id="timecodes" style={{ width: "100%" }}>
-            <TimeCodes
-              style={{ position: "absolute" }}
-              showingIndex={0}
-              curr={0}
-              timeCodes={timeCodes[0]}
-              timeCodesList={timeCodes}
-              original={original}
-              timeCodesString={timeCodesString}
-              setTimeCodesString={setTimeCodesString}
-            />
-          </div>
-        )}
+        ) : (<p></p>)}  {/*
+            for some reason just using "timeCodes && ... "
+            displays a 0 in place of the timecodes while they are loading.
+            Don't know why atm.
+        */}
         {index < timeCodes.length - 1 && (
           <ArrowButton
             onClick={() => {
