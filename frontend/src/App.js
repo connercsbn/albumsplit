@@ -292,12 +292,13 @@ function App() {
         <Container
           maxWidth="md"
           style={{
-            padding: "2% 4em",
+            padding: "2% 1em",
             overflow: "hidden",
           }}
         >
           <div className="App">
             <Typography
+              id="heading"
               variant="h2"
               onClick={() => window.location.reload()}
               style={{
