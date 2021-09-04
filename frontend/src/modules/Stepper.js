@@ -67,7 +67,7 @@ const ColorlibConnector = withStyles({
 
 const useColorlibStepIconStyles = makeStyles({
   root: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#918d85",
     zIndex: 1,
     color: "rgba(250,250,255,1)",
     width: 50,
@@ -88,7 +88,7 @@ const useColorlibStepIconStyles = makeStyles({
       top:0,right:0,bottom:0,left:0,
       borderRadius:'50%',
       backgroundImage: 'linear-gradient( 136deg, #fffc 0%, #e8aa1899 50%, #664d1c 100%)',
-      
+
       zIndex: -1,
       transition: 'opacity 0.2s ease',
       opacity: 0
