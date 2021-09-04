@@ -196,6 +196,7 @@ export default function HorizontalLinearStepper({
             variant="outlined"
             color="secondary"
             onChange={handleUrlChange}
+	    spellCheck={false}
             autoFocus
             id="standard-basic"
             label="YouTube URL"
