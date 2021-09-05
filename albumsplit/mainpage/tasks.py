@@ -1,6 +1,6 @@
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
-import requests, youtube_dl, re, subprocess, os, string, re
+import requests, yt_dlb, re, subprocess, os, string, re
 import time, shutil, io
 import time
 from subprocess import PIPE
@@ -27,7 +27,7 @@ def get_album_info(self, url):
             'key': 'FFmpegExtractAudio',
         }]
     }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlb.YoutubeDL(ydl_opts) as ydl:
         message = ydl.extract_info(url, download=False)
     titleid = message["id"]
     year = message["upload_date"][:4]
@@ -84,10 +84,11 @@ def download(self, info):
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
             }],
+            'throttledratelimit': 128 * 1024
             'progress_hooks': [get_percentage]
         }
 
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlb.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
         with open(f'media/{titleid}.txt', "w+") as f:
             f.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
@@ -96,14 +97,14 @@ def download(self, info):
     longmediaurl = FileSystemStorage().url(f'{titleid}.opus')
     escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE) \
         .stdout.read().decode("utf-8").split('\n')[0]
-    progress_recorder.set_progress(2, num_tasks, 
+    progress_recorder.set_progress(2, num_tasks,
         description=f'splitting audio & tagging tracks')
     process1 = subprocess.Popen([
-        booksplit_path, 
-        f'.{longmediaurl}', 
-        f'.{tagurl}', 
-        f'{title}', 
-        f'{artist}', 
+        booksplit_path,
+        f'.{longmediaurl}',
+        f'.{tagurl}',
+        f'{title}',
+        f'{artist}',
         f'{year}'], stdout=PIPE, stderr=PIPE)
     messages = []
     messages.append(process1.stdout.read().decode("utf-8").rstrip().split('\n'))
