@@ -1,6 +1,6 @@
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
-import requests, yt_dlb, re, subprocess, os, string, re
+import requests, yt_dlp, re, subprocess, os, string, re
 import time, shutil, io
 import time
 from subprocess import PIPE
@@ -27,7 +27,7 @@ def get_album_info(self, url):
             'key': 'FFmpegExtractAudio',
         }]
     }
-    with yt_dlb.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         message = ydl.extract_info(url, download=False)
     titleid = message["id"]
     year = message["upload_date"][:4]
@@ -88,7 +88,7 @@ def download(self, info):
             'progress_hooks': [get_percentage]
         }
 
-        with yt_dlb.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
         with open(f'media/{titleid}.txt', "w+") as f:
             f.write('\n'.join([' '.join(timecode) for timecode in timecodes]))
