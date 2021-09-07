@@ -74,16 +74,16 @@ def download(self, info):
             if d['status'] == 'downloading':
                 percentage_progress = d['_percent_str']
                 percent = float(percentage_progress.strip().strip('%'))
-                # get overall progress from download progress, 
+                # get overall progress from download progress,
                 # assuming download takes 6/10 of the progress bar
                 overall_percentage = (percent * .01) * .7 * num_tasks
-                progress_recorder.set_progress(overall_percentage, num_tasks, 
+                progress_recorder.set_progress(overall_percentage, num_tasks,
                     description=f'Downloading ({percentage_progress.strip()})')
 
         ydl_opts = {
             'outtmpl': f'{MEDIA_ROOT}/%(id)s.%(ext)s',
             'extractaudio': True,
-            'audio-quality': 'bestaudio/best',
+            'format': 'bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
             }],
@@ -106,20 +106,20 @@ def download(self, info):
     escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE) \
         .stdout.read().decode("utf-8").split('\n')[0]
     # if splitting, serve zipped foler
-    # else, serve zipped file (either being called escapedtitle) 
+    # else, serve zipped file (either being called escapedtitle)
     messages = []
     os.chdir(MEDIA_ROOT)
 
     if split:
         # if serving album directory
-        progress_recorder.set_progress(8, num_tasks, 
+        progress_recorder.set_progress(8, num_tasks,
             description=f'splitting audio & tagging tracks')
         split_process = subprocess.Popen([
-            booksplit_path, 
-            f'{mediafile}', 
-            f'{tagfile}', 
-            f'{title}', 
-            f'{artist}', 
+            booksplit_path,
+            f'{mediafile}',
+            f'{tagfile}',
+            f'{title}',
+            f'{artist}',
             f'{year}'], stdout=PIPE, stderr=PIPE)
         messages.append(split_process.stdout.read().decode("utf-8").rstrip().split('\n'))
         messages.append(split_process.stderr.read().decode("utf-8").rstrip())
@@ -130,7 +130,7 @@ def download(self, info):
         messages.append(compress_process.stdout.read().decode("utf-8").rstrip())
         messages.append(compress_process.stderr.read().decode("utf-8").rstrip())
         zipurl = FileSystemStorage().url(f'{escapedtitle}.zip')
-    
+
     else: # if just serving the single opus or m4a file
         ext = os.path.splitext(mediaurl)[1]
         os.rename(f'..{mediaurl}', escapedtitle + ext)
