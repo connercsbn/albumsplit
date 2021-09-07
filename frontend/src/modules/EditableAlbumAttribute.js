@@ -16,6 +16,7 @@ const EditableAlbumAttribute = ({ info, setNewInfo, original, label }) => {
         }}
       >
         <TextField
+	  spellcheck={false}
           value={info}
           label={label}
           onChange={(e) => setNewInfo(e.target.value)}

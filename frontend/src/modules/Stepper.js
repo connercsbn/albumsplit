@@ -67,7 +67,7 @@ const ColorlibConnector = withStyles({
 
 const useColorlibStepIconStyles = makeStyles({
   root: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#918d85",
     zIndex: 1,
     color: "rgba(250,250,255,1)",
     width: 50,
@@ -78,11 +78,44 @@ const useColorlibStepIconStyles = makeStyles({
     alignItems: "center",
   },
   active: {
-    backgroundImage:
-      "linear-gradient( 136deg, var(--yellow) 0%, var(--yellow) 50%, var(--purple) 100%)",
+    position: 'relative',
+    background:
+      'linear-gradient( 136deg, #ffca4e 0%, #e6b23a 50%, #994537 100%)',
     boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    '&::before': {
+      position: 'absolute',
+      content: '""',
+      top:0,right:0,bottom:0,left:0,
+      borderRadius:'50%',
+      backgroundImage: 'linear-gradient( 136deg, #fffc 0%, #e8aa1899 50%, #664d1c 100%)',
+
+      zIndex: -1,
+      transition: 'opacity 0.2s ease',
+      opacity: 0
+    },
+    '&:hover, &:focus': {
+      '&::before': {
+        opacity: 0.8
+      }
+    }
   },
   completed: {
+    position: 'relative',
+    '&::before': {
+      position: 'absolute',
+      content: '""',
+      top:0,right:0,bottom:0,left:0,
+      borderRadius:'50%',
+      backgroundImage: 'linear-gradient(136deg, #bfe8b1 0%, #4b8256 60%, #50826e 100%)',
+      zIndex: -1,
+      transition: 'opacity 0.2s ease',
+      opacity: 0
+    },
+    '&:hover, &:focus': {
+      '&::before': {
+        opacity: 0.5
+      }
+    },
     backgroundImage:
       "linear-gradient( 136deg, var(--cyan) 0%, var(--blue) 60%, var(--blue) 100%)",
   },
@@ -106,6 +139,9 @@ const useStyles = makeStyles((theme) => ({
 function getSteps() {
   return ["Input YouTube link", "Confirm tracklist", "Prepare download"];
 }
+function getInstruction(activeStep) {
+  return ['Pick a YouTube album or audio book whose timecodes are in the description or comments, and this will download the album, separate and tag each track, and put it in a zip file','Here are the best timestamps we could find. These will be used to split the album, so fix any mistakes here or write your own.'][activeStep]
+}
 
 export default function HorizontalLinearStepper({
   initialStepsContent,
@@ -126,7 +162,7 @@ export default function HorizontalLinearStepper({
   const handleIconClick = (index) => {
     if (activeStep > index) {
       setActiveStep(index);
-    } else if (index === 1 && albumUrl) {
+    } else if (index === 1 && activeStep === 0 && albumUrl) {
       handleNext();
     }
   };
@@ -160,6 +196,7 @@ export default function HorizontalLinearStepper({
             variant="outlined"
             color="secondary"
             onChange={handleUrlChange}
+	    spellCheck={false}
             autoFocus
             id="standard-basic"
             label="YouTube URL"
@@ -198,6 +235,7 @@ export default function HorizontalLinearStepper({
         alternativeLabel
         style={{
           backgroundColor: "unset",
+          padding: '1em 0.4em'
         }}
         connector={<ColorlibConnector />}
       >
@@ -232,22 +270,18 @@ export default function HorizontalLinearStepper({
         ) : (
           <div>
             <Typography className={classes.instructions} variant="subtitle1">
-              <Paper
+		{activeStep < 2 && <Paper
                 variant="elevation"
                 elevation={3}
                 style={{
                   padding: "0.01em 1em",
                   margin: "1em 0",
-                  backgroundColor: "rgba(40,40,40,.9)",
+                  //backgroundColor: "rgba(40,40,40,.9)",
                   // border: "1px solid rgba(255,255,255,.2)",
                 }}
               >
-                <p>
-                  Pick a YouTube album or audio book whose timecodes are in the
-                  description or comments, and this will download the album,
-                  separate and tag each track, and put it in a zip file
-                </p>
-              </Paper>
+		<p>{getInstruction(activeStep)}</p>
+              </Paper>}
               <SyncLoader
                 loading={loading && activeStep === 1}
                 size={15}

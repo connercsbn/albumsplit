@@ -19,7 +19,7 @@ def get_album_info(self, url):
     progress_recorder.set_progress(1, num_tasks, description=f'looking in description for timecodes')
     print('start')
     ydl_opts = {
-        'outtmpl': 'media/%(id)s.%(ext)s',
+        'outtmpl': f'{MEDIA_ROOT}/%(id)s.%(ext)s',
         'extractaudio': True,
         'format': 'bestaudio/best',
         'postprocessors': [{
@@ -40,7 +40,7 @@ def get_album_info(self, url):
         message = downloader.main(['--youtubeid', titleid, '--output', 'thing', '--sort', '0', '--limit', '50'])
         for comment in message:
             comment_playlists.append(get_timecodes(comment))
-        timecodes = comment_playlists
+        timecodes = comment_playlists or [[]]
     else:
         timecodes = [playlist]
     progress_recorder.set_progress(3, num_tasks, description=f'done')
@@ -65,7 +65,12 @@ def download(self, info):
     info['url'], info['titleid'], info['timecodes'], \
     info['title'], info['artist'], info['year'], info['split']
 
+    # if timecodes don't have content, don't split
+    if not len(timecodes.strip()):
+        split = False
 
+    print(len(timecodes.strip()))
+    print(split)
     if not exists_already(titleid):
         def get_percentage(d):
             if d['status'] == 'finished':
@@ -75,7 +80,7 @@ def download(self, info):
                 percentage_progress = d['_percent_str']
                 percent = float(percentage_progress.strip().strip('%'))
                 # get overall progress from download progress,
-                # assuming download takes 6/10 of the progress bar
+                # assuming download takes 7/10 of the progress bar
                 overall_percentage = (percent * .01) * .7 * num_tasks
                 progress_recorder.set_progress(overall_percentage, num_tasks,
                     description=f'Downloading ({percentage_progress.strip()})')
@@ -100,7 +105,7 @@ def download(self, info):
     tagfile = f'{titleid}.txt'
     mediaurl = FileSystemStorage().url(f'{titleid}.m4a')
     mediafile = f'{titleid}.m4a'
-    if not Path('.' + mediaurl).is_file():
+    if not (Path(MEDIA_ROOT) / mediafile).is_file():
         mediaurl = FileSystemStorage().url(f'{titleid}.opus')
         mediafile = f'{titleid}.opus'
     escapedtitle = subprocess.Popen([esctitle_path, f'{title}'], stdout=PIPE) \
@@ -133,7 +138,7 @@ def download(self, info):
 
     else: # if just serving the single opus or m4a file
         ext = os.path.splitext(mediaurl)[1]
-        os.rename(f'..{mediaurl}', escapedtitle + ext)
+        os.rename(f'{mediafile}', escapedtitle + ext)
         zipurl = FileSystemStorage().url(escapedtitle + ext)
     progress_recorder.set_progress(num_tasks, num_tasks, description='Finished')
     os.chdir(BASE_DIR)
@@ -159,7 +164,7 @@ def get_timecodes(text):
 
 def exists_already(id):
     for file in os.listdir(MEDIA_ROOT):
-        if id in file:
+        if id in file and os.path.splitext(file)[1] != '.part':
             print(f'found file {file} matching id {id}')
             return True
     print(f'didn\'t find a video file matching the id {id}')

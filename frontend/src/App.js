@@ -216,6 +216,7 @@ function App() {
             id="select-audio-type"
             value={audioType}
             onChange={handleAudioTypeChange}
+            MenuProps={{ disableScrollLock: true }}
           >
             <MenuItem value={"opus"}>
               Opus{" "}
@@ -277,7 +278,7 @@ function App() {
           maxWidth: "9em",
         }}
         variant="contained"
-        href={"http://localhost:8000" + zipUrl}
+        href={zipUrl}
       >
         Download
       </Button>
@@ -291,12 +292,13 @@ function App() {
         <Container
           maxWidth="md"
           style={{
-            padding: "0 4em",
+            padding: "2% 1em",
             overflow: "hidden",
           }}
         >
           <div className="App">
             <Typography
+              id="heading"
               variant="h2"
               onClick={() => window.location.reload()}
               style={{
