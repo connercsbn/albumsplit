@@ -42,7 +42,7 @@ const TimeCodesDisplayer = ({
             }}
             style={{
               position: "absolute",
-              left: "-57px",
+              left: "0px",
               top: "118px",
               zIndex: 200,
             }}
@@ -84,7 +84,7 @@ const TimeCodesDisplayer = ({
             }}
             style={{
               position: "absolute",
-              right: "-57px",
+              right: "0px",
               top: "118px",
               zIndex: 200,
             }}

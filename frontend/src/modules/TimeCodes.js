@@ -89,6 +89,7 @@ const TimeCodes = ({
           label={
             timeCodesList?.length > 1 ? getTimeCodeLabel(curr) : "Timecodes"
           }
+          style={{position: 'relative', display: 'block', width: 'calc(100% - 80px)', margin: 'auto'}}Z
           disabled={!split}
           maxRows={13}
           minRows={13}
