@@ -145,7 +145,7 @@ function App() {
       return;
     }
     setLoading(true);
-    const res = await fetch("https://api.conner.soy/yturl", {
+    const res = await fetch("https://api.conner.soy/yturl/", {
       method: "POST",
       credentials: "include",
       headers: {
