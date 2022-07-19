@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 async function handleToken() {
   if (Cookies.get("csrftoken") === undefined) {
-    const res = await fetch("http://localhost:8000/api/csrf", {
+    const res = await fetch("https://api.conner.soy/csrf/", {
       credentials: "include",
     });
     const json = await res.json();

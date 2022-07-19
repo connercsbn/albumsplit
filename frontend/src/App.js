@@ -76,7 +76,7 @@ function App() {
     setAlbumUrl(event.target.value);
   };
   const handleFinalize = async () => {
-    const res = await fetch("http://localhost:8000/api/get_album/", {
+    const res = await fetch("https://api.conner.soy/get_album/", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -105,7 +105,7 @@ function App() {
     if (id) {
       setLoading(true);
       const interval = setInterval(async () => {
-        const res = await fetch("http://localhost:8000/api/progress/" + id);
+        const res = await fetch("https://api.conner.soy/progress/" + id);
         const json = await res.json();
         console.log(json);
         setPercent(json.progress.percent);
@@ -145,7 +145,7 @@ function App() {
       return;
     }
     setLoading(true);
-    const res = await fetch("http://localhost:8000/api/yturl", {
+    const res = await fetch("https://api.conner.soy/yturl", {
       method: "POST",
       credentials: "include",
       headers: {

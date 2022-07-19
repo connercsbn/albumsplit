@@ -1,26 +1,26 @@
 {
   "files": {
     "main.css": "/albumsplit/static/css/main.43bf061c.chunk.css",
-    "main.js": "/albumsplit/static/js/main.65a6e75d.chunk.js",
-    "main.js.map": "/albumsplit/static/js/main.65a6e75d.chunk.js.map",
+    "main.js": "/albumsplit/static/js/main.ef63f556.chunk.js",
+    "main.js.map": "/albumsplit/static/js/main.ef63f556.chunk.js.map",
     "runtime-main.js": "/albumsplit/static/js/runtime-main.dd0031da.js",
     "runtime-main.js.map": "/albumsplit/static/js/runtime-main.dd0031da.js.map",
     "static/css/2.a364c5a7.chunk.css": "/albumsplit/static/css/2.a364c5a7.chunk.css",
-    "static/js/2.0aaa09a4.chunk.js": "/albumsplit/static/js/2.0aaa09a4.chunk.js",
-    "static/js/2.0aaa09a4.chunk.js.map": "/albumsplit/static/js/2.0aaa09a4.chunk.js.map",
+    "static/js/2.6cbe58ff.chunk.js": "/albumsplit/static/js/2.6cbe58ff.chunk.js",
+    "static/js/2.6cbe58ff.chunk.js.map": "/albumsplit/static/js/2.6cbe58ff.chunk.js.map",
     "static/js/3.e6fa3513.chunk.js": "/albumsplit/static/js/3.e6fa3513.chunk.js",
     "static/js/3.e6fa3513.chunk.js.map": "/albumsplit/static/js/3.e6fa3513.chunk.js.map",
     "index.html": "/albumsplit/index.html",
     "static/css/2.a364c5a7.chunk.css.map": "/albumsplit/static/css/2.a364c5a7.chunk.css.map",
     "static/css/main.43bf061c.chunk.css.map": "/albumsplit/static/css/main.43bf061c.chunk.css.map",
-    "static/js/2.0aaa09a4.chunk.js.LICENSE.txt": "/albumsplit/static/js/2.0aaa09a4.chunk.js.LICENSE.txt",
+    "static/js/2.6cbe58ff.chunk.js.LICENSE.txt": "/albumsplit/static/js/2.6cbe58ff.chunk.js.LICENSE.txt",
     "static/media/index.css": "/albumsplit/static/media/roboto-vietnamese-400-normal.c0bec65d.woff2"
   },
   "entrypoints": [
     "static/js/runtime-main.dd0031da.js",
     "static/css/2.a364c5a7.chunk.css",
-    "static/js/2.0aaa09a4.chunk.js",
+    "static/js/2.6cbe58ff.chunk.js",
     "static/css/main.43bf061c.chunk.css",
-    "static/js/main.65a6e75d.chunk.js"
+    "static/js/main.ef63f556.chunk.js"
   ]
 }
