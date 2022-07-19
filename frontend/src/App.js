@@ -129,7 +129,7 @@ function App() {
           } else {
             if (json.result.zipurl) {
               setComplete(true);
-              setZipUrl(json.result.zipurl);
+              setZipUrl('https://api.conner.soy' + json.result.zipurl);
               setLoading(false);
               setActiveStep(3);
             }
